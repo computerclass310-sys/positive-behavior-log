@@ -174,9 +174,6 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .arow>div{flex:1}.arow b{font-weight:600;font-size:15px}.arow small{display:block;font-size:12px;color:var(--mute)}
 .multi .chip[aria-pressed=true]::before{content:"✓ "}
 .multi .chip[data-main=true]::after{content:" · رئيسي";font-size:12px;opacity:.85}
-details summary{cursor:pointer;font-size:14px;color:var(--mute);list-style:none}
-details summary::before{content:"＋ "}
-details[open] summary::before{content:"－ "}
 #printbox{display:none}
 [hidden]{display:none!important}
 @media(max-width:900px){.cap{display:none}}
@@ -340,7 +337,7 @@ details[open] summary::before{content:"－ "}
           <small class="psub">أسماء الطالبات مشتركة بين كل معلمات المدرسة</small>
           <button type="button" class="card importcard" id="impb">
             <span class="ibox dark"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg></span>
-            <div><b>استيراد أسماء الطالبات</b><small>ملف Excel أو CSV: الاسم، ثم الصف، ثم رقم الهوية (اختياري)</small></div>
+            <div><b>استيراد أسماء الطالبات</b><small>ملف Excel أو CSV: عمود الاسم، ثم عمود الصف</small></div>
             <svg class="ic" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
           </button>
           <input type="file" id="imp" accept=".xlsx,.xls,.csv,.txt" hidden>
@@ -348,8 +345,6 @@ details[open] summary::before{content:"－ "}
           <form class="card" id="af" hidden novalidate><h3><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h12M4 12h8M4 18h6M15 19l6-6-2-2-6 6v2z"/></svg><span id="aftitle">إضافة طالبة يدوياً</span><span class="badge">إدخال سريع</span></h3>
             <label class="l" for="nn" style="margin-top:0"><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>اسم الطالبة رباعياً <span class="req">*</span></label>
             <div class="field"><input id="nn" placeholder="مثال: أمل بنت سلطان بن خالد العتيبي"></div>
-            <label class="l" for="nid">رقم الهوية <small>اختياري، 10 أرقام</small></label>
-            <div class="field"><input id="nid" inputmode="numeric" dir="ltr" maxlength="10" placeholder="1xxxxxxxxx"></div>
             <label class="l" for="nc"><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg>الصف والفصل الدراسي <span class="req">*</span></label>
             <div class="field sel"><select id="nc"></select><svg class="ic chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
             <div style="height:16px"></div>
@@ -391,11 +386,6 @@ details[open] summary::before{content:"－ "}
               <div class="alist" id="alist"></div>
             </div>
             <div style="display:flex;gap:10px;margin-top:14px"><div class="field sel" style="flex:1"><select id="addSel" aria-label="صف لربطه بكِ"></select><svg class="ic chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><button type="button" class="gbtn dark" id="addAssign"><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>ربط صف إضافي</button></div>
-            <details style="margin-top:16px"><summary>صف غير موجود في قائمة المدرسة؟</summary>
-              <form id="cf" novalidate style="display:flex;gap:10px;margin-top:10px"><div class="field" style="flex:1"><input id="cn" placeholder="مثال: ثالث 7" aria-label="اسم الصف الجديد"></div><button class="gbtn">إضافة للمدرسة</button></form>
-              <div class="chips" id="clist" style="margin-top:12px"></div>
-            </details>
-            <button type="button" class="gbtn wide" id="goimp" style="margin-top:14px;font-size:15px;font-weight:500"><svg class="ic" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>استيراد أسماء الطالبات من ملف</button>
           </div>
           <div class="card"><h3><svg class="ic" viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18c1 0 1.5-.8 1.5-1.5 0-1.2-1-1.5-1-2.5s.8-1.5 2-1.5H17a4 4 0 004-4c0-4.4-4-8.5-9-8.5z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></svg>التفضيلات والمظهر</h3>
             <div class="set"><div>المظهر الداكن (Dark Mode) <span class="badge warm" style="margin-inline-start:4px">قيد التحديث</span><small>تفعيل نمط التباين العالي أثناء الفترات المسائية</small></div><input type="checkbox" class="tog" disabled aria-label="المظهر الداكن، قيد التحديث"></div>
@@ -444,7 +434,6 @@ const first=n=>String(n).split(" ")[0];
 const ini=n=>String(n||"").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("");
 const cname=id=>classes.find(c=>c.id===id)?.name||"";
 const cparts=id=>{const n=cname(id).split(" ");return[n[0]?n[0]+" ثانوي":"-",n.slice(1).join(" ")||"-"]};
-const mask=v=>v?v.slice(0,4)+"****"+v.slice(-2):"غير مسجل";
 const fmtDate=d=>new Date(d).toLocaleDateString("ar-SA-u-ca-islamic-umalqura",{day:"numeric",month:"numeric",year:"numeric"});
 const status=t=>t>=max()?["مستوفية","ok"]:t>=exl()?["متميزة","cool"]:["قيد التقدم","warm"];
 const tname=()=>`أ. ${me?.full_name||""}`;
@@ -464,7 +453,7 @@ const I={edit:'<svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24
 async function loadAll(){
   const [c,s,r,a]=await Promise.all([
     db.from("classes").select("id,name").order("id"),
-    db.from("students").select("id,full_name,class_id,created_by,national_id").order("full_name"),
+    db.from("students").select("id,full_name,class_id,created_by").order("full_name"),
     db.from("student_teacher_scores").select("student_id,total").eq("teacher_id",me.id),
     db.from("teacher_classes").select("class_id,is_primary").eq("teacher_id",me.id)]);
   const e=c.error||s.error||r.error||a.error; if(e) return fail(e);
@@ -482,7 +471,6 @@ function renderAll(){
   $("#rclSel").innerHTML=opts;$("#rclSel").value=rcls??"";
   const nv=$("#nc").value;
   $("#nc").innerHTML=`<option value="">اختاري الصف والفصل الدراسي...</option>`+classes.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("");$("#nc").value=nv;
-  $("#clist").innerHTML=classes.map(c=>`<span class="chip"><i></i>${esc(c.name)}</span>`).join("")||`<p class="muted">لا توجد صفوف بعد.</p>`;
   renderAssign();
   lists();
 }
@@ -495,7 +483,7 @@ function pick(){
   ss.innerHTML=inC.length?`<option value="">اختاري الطالبة (${inC.length} طالبة)</option>`+inC.map(s=>`<option value="${s.id}">${esc(s.full_name)}</option>`).join(""):`<option value="">لا توجد طالبات في هذا الصف</option>`;
   ss.disabled=!inC.length;ss.value=sel??"";
   const st=students.find(x=>x.id===sel);
-  if(st){const [t,k]=status(sc(st.id));$("#pick").innerHTML=`<div class="picked">${row(st,`<span class="badge ${k}">${t}</span>`,`رقم الهوية: ${esc(mask(st.national_id))} · ${esc(cname(st.class_id))}`)}</div>`}
+  if(st){const [t,k]=status(sc(st.id));$("#pick").innerHTML=`<div class="picked">${row(st,`<span class="badge ${k}">${t}</span>`,`${esc(cname(st.class_id))} · ${sc(st.id)} / ${max()} درجة`)}</div>`}
   else $("#pick").innerHTML=inC.length?"":`<p class="muted" style="margin-top:8px">أضيفي طالبات هذا الصف من تبويب الطالبات أولاً.</p>`;
   meter();
 }
@@ -570,7 +558,7 @@ function printDoc(html){
 }
 $("#notice").onclick=()=>{
   if(!lastRec) return;const r=lastRec,s=r.student;
-  printDoc(phead("بطاقة إشعار سلوك إيجابي")+`<table><tr><th>اسم الطالبة</th><td>${esc(s.full_name)}</td></tr><tr><th>رقم الهوية</th><td>${esc(mask(s.national_id))}</td></tr><tr><th>الصف</th><td>${esc(cname(s.class_id))}</td></tr><tr><th>السلوك الإيجابي</th><td>${esc(r.desc)}</td></tr><tr><th>الدرجة المرصودة</th><td>+${r.pts}</td></tr><tr><th>المجموع الحالي</th><td>${r.total} / ${max()}</td></tr><tr><th>تاريخ الرصد</th><td>${fmtDate(r.date)}</td></tr></table>`+pfoot(r.sig));
+  printDoc(phead("بطاقة إشعار سلوك إيجابي")+`<table><tr><th>اسم الطالبة</th><td>${esc(s.full_name)}</td></tr><tr><th>الصف</th><td>${esc(cname(s.class_id))}</td></tr><tr><th>السلوك الإيجابي</th><td>${esc(r.desc)}</td></tr><tr><th>الدرجة المرصودة</th><td>+${r.pts}</td></tr><tr><th>المجموع الحالي</th><td>${r.total} / ${max()}</td></tr><tr><th>تاريخ الرصد</th><td>${fmtDate(r.date)}</td></tr></table>`+pfoot(r.sig));
 };
 
 // ---------- المتابعة ----------
@@ -599,7 +587,7 @@ async function detail(){
   if(det==null){box.innerHTML=`<p class="muted">اختاري طالبة من القائمة لعرض تقريرها.</p>`;return}
   const id=det,s=students.find(x=>x.id===id),[g,sec]=cparts(s.class_id);
   box.innerHTML=`<div class="doc"><div><small>المملكة العربية السعودية</small><small>${esc(school()||"أضيفي اسم المدرسة من الإعدادات")}</small><b>سجل درجات السلوك الإيجابي</b></div><span class="ibox">${I.bank}</span></div>
-    <div class="stu">${avatar(s,"rgba(255,255,255,.7)")}<div><b style="font-size:17px">${esc(s.full_name)}</b><small>رقم الهوية: <span dir="ltr">${esc(mask(s.national_id))}</span></small></div><div class="total"><small>المجموع النهائي</small><b>${sc(id)}</b> <small style="display:inline">/ ${max()} درجة</small></div></div>
+    <div class="stu">${avatar(s,"rgba(255,255,255,.7)")}<div><b style="font-size:17px">${esc(s.full_name)}</b><small>${esc(cname(s.class_id))}</small></div><div class="total"><small>المجموع النهائي</small><b>${sc(id)}</b> <small style="display:inline">/ ${max()} درجة</small></div></div>
     <div class="kv"><div><small>الصف الدراسي</small><b>${esc(g)}</b></div><div><small>الفصل</small><b>${esc(sec)}</b></div></div>
     <div class="subh">تفاصيل الفرص والمشاركات المرصودة<span class="badge" id="evc">…</span></div>
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
@@ -621,7 +609,7 @@ $("#det").addEventListener("click",async e=>{
 });
 function printOne(){
   const s=students.find(x=>x.id===det);if(!s)return;
-  printDoc(phead("سجل درجات السلوك الإيجابي")+`<table><tr><th>اسم الطالبة</th><td>${esc(s.full_name)}</td><th>رقم الهوية</th><td>${esc(mask(s.national_id))}</td></tr><tr><th>الصف</th><td>${esc(cname(s.class_id))}</td><th>المجموع النهائي</th><td>${sc(s.id)} / ${max()}</td></tr></table>
+  printDoc(phead("سجل درجات السلوك الإيجابي")+`<table><tr><th>اسم الطالبة</th><td colspan="3">${esc(s.full_name)}</td></tr><tr><th>الصف</th><td>${esc(cname(s.class_id))}</td><th>المجموع النهائي</th><td>${sc(s.id)} / ${max()}</td></tr></table>
     <h2>تفاصيل الفرص والمشاركات المرصودة (${detRecs.length})</h2><table><tr><th>#</th><th>السلوك</th><th>الدرجة</th><th>التاريخ</th></tr>${detRecs.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.description)}</td><td>+${r.points}</td><td>${fmtDate(r.created_at)}</td></tr>`).join("")||`<tr><td colspan="4">لا توجد سجلات</td></tr>`}</table>`+pfoot(null));
 }
 $("#share").onclick=async()=>{
@@ -637,8 +625,8 @@ const dl=(name,type,text)=>{const a=document.createElement("a");a.href=URL.creat
 function exportAs(kind){
   const l=classRows(),m=max(),title=`سجل درجات السلوك الإيجابي - ${cname(rcls)} - ${tname()}`,fname=`positive-behavior-class${rcls}-${new Date().toISOString().slice(0,10)}`;
   if(!l.length) return toast("لا توجد طالبات في هذا الصف للتصدير");
-  const rows=l.map((s,i)=>[i+1,s.full_name,mask(s.national_id),cname(s.class_id),sc(s.id),m,status(sc(s.id))[0]]);
-  const head=["#","اسم الطالبة","رقم الهوية","الصف","المجموع","النصاب","الحالة"];
+  const rows=l.map((s,i)=>[i+1,s.full_name,cname(s.class_id),sc(s.id),m,status(sc(s.id))[0]]);
+  const head=["#","اسم الطالبة","الصف","المجموع","النصاب","الحالة"];
   if(kind==="pdf") return printDoc(phead(`ملخص درجات السلوك الإيجابي · ${cname(rcls)}`)+`<table><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</table>`+pfoot(null));
   if(kind==="excel"){
     if(window.XLSX){const ws=XLSX.utils.aoa_to_sheet([head,...rows]);const wb=XLSX.utils.book_new();wb.Workbook={Views:[{RTL:true}]};XLSX.utils.book_append_sheet(wb,ws,"السجل");dl(`${fname}.xlsx`,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",XLSX.write(wb,{bookType:"xlsx",type:"array"}))}
@@ -659,13 +647,12 @@ $("#sq").oninput=all;
 function openForm(s){
   editId=s?.id??null;$("#af").hidden=false;$("#addtoggle").hidden=true;
   $("#aftitle").textContent=s?"تعديل بيانات الطالبة":"إضافة طالبة يدوياً";$("#afbtnt").textContent=s?"حفظ التعديل":"إضافة وحفظ الطالبة";
-  $("#nn").value=s?.full_name||"";$("#nid").value=s?.national_id||"";$("#nc").value=s?.class_id??"";
+  $("#nn").value=s?.full_name||"";$("#nc").value=s?.class_id??"";
   $("#af").scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>$("#nn").focus(),300);
 }
 const closeForm=()=>{editId=null;$("#af").hidden=true;$("#addtoggle").hidden=false};
 $("#addtoggle").onclick=()=>openForm(null);
 $("#afcancel").onclick=closeForm;
-$("#nid").oninput=e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,10)};
 $("#all").onclick=async e=>{
   const ed=e.target.closest("[data-edit]"),b=e.target.closest("[data-del]");if(!ed&&!b)return;
   const id=+e.target.closest(".stu").dataset.id,s=students.find(x=>x.id===id);
@@ -680,22 +667,20 @@ $("#all").onclick=async e=>{
 };
 $("#af").onsubmit=async e=>{
   e.preventDefault();
-  const n=$("#nn").value.trim().replace(/\s+/g," "),nid=$("#nid").value.trim(),cid=+$("#nc").value;
+  const n=$("#nn").value.trim().replace(/\s+/g," "),cid=+$("#nc").value;
   if(n.split(" ").length<2) return toast("اكتبي الاسم الكامل للطالبة");
-  if(nid&&!/^\d{10}$/.test(nid)) return toast("رقم الهوية 10 أرقام، أو اتركيه فارغاً");
   if(!cid) return toast("اختاري الصف والفصل الدراسي");
-  const b=$("#afbtn"),row_={full_name:n,class_id:cid,national_id:nid||null};busy(b,true);
+  const b=$("#afbtn"),row_={full_name:n,class_id:cid};busy(b,true);
   const q=editId?db.from("students").update(row_).eq("id",editId):db.from("students").insert(row_);
-  const {data,error}=await q.select("id,full_name,class_id,created_by,national_id").single();
+  const {data,error}=await q.select("id,full_name,class_id,created_by").single();
   busy(b,false);
   if(error) return fail(error,"لم تُحفظ بيانات الطالبة، حاولي مرة أخرى");
   students=students.filter(s=>s.id!==data.id);students.push(data);students.sort((a,b)=>a.full_name.localeCompare(b.full_name,"ar"));
   toast(editId?"حُفظ التعديل":"أُضيفت الطالبة إلى السجل");
-  if(editId) closeForm(); else{$("#nn").value="";$("#nid").value="";$("#nn").focus()}
+  if(editId) closeForm(); else{$("#nn").value="";$("#nn").focus()}
   lists();
 };
 $("#impb").onclick=()=>$("#imp").click();
-$("#goimp").onclick=()=>{go("stu");$("#imp").click()};
 async function readRows(f){
   if(/\.xlsx?$/i.test(f.name)){
     if(!window.XLSX) throw new Error("xlsx");
@@ -707,10 +692,10 @@ async function readRows(f){
 $("#imp").onchange=async e=>{
   const f=e.target.files[0];e.target.value="";if(!f)return;
   let lines;try{lines=(await readRows(f)).filter(p=>p[0]&&p[1]&&!/الاسم/.test(p[0]))}catch(x){return toast("تعذّرت قراءة الملف. جرّبي حفظه بصيغة CSV")}
-  if(!lines.length) return toast("لم أجد أسماء. الصيغة: الاسم، ثم الصف، ثم رقم الهوية (اختياري)",4000);
+  if(!lines.length) return toast("لم أجد أسماء. الصيغة: عمود الاسم، ثم عمود الصف",4000);
   const newC=[...new Set(lines.map(p=>p[1]))].filter(n=>!classes.some(c=>c.name===n));
   if(newC.length){const {error}=await db.from("classes").insert(newC.map(name=>({name})));if(error)return fail(error,"تعذّر إنشاء الصفوف الجديدة من الملف");await loadAll()}
-  const rows=lines.map(p=>({full_name:p[0].replace(/\s+/g," "),class_id:classes.find(c=>c.name===p[1]).id,national_id:/^\d{10}$/.test(p[2]||"")?p[2]:null}));
+  const rows=lines.map(p=>({full_name:p[0].replace(/\s+/g," "),class_id:classes.find(c=>c.name===p[1]).id}));
   const {error}=await db.from("students").insert(rows);
   if(error) return fail(error,"تعذّر استيراد الطالبات، تأكدي من صيغة الملف");
   await loadAll();toast(`استُوردت ${rows.length} طالبة`);
@@ -792,13 +777,6 @@ $("#alist").onclick=async e=>{
     assigned.find(a=>a.class_id===id).class_id=nid;if(cls===id)cls=nid;if(rcls===id)rcls=nid;
     renderAll();toast(`استُبدل ${cname(id)} بـ ${cname(nid)}`);
   }
-};
-$("#cf").onsubmit=async e=>{
-  e.preventDefault();const n=$("#cn").value.trim();if(!n)return toast("اكتبي اسم الصف");
-  if(classes.some(c=>c.name===n)) return toast("هذا الصف موجود مسبقاً");
-  const {error}=await db.from("classes").insert({name:n});
-  if(error) return fail(error,"لم يُحفظ الصف");
-  $("#cn").value="";await loadAll();toast("أُضيف الصف");
 };
 
 // ---------- الدخول برمز التحقق ----------
