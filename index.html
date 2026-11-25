@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>سجل السلوك الزجاجي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday tool for teachers, calm and soft
+   IDEA frosted glass panes floating over soft pastel colour shapes (the reference mood app)
+   PICTURE the phone itself: a live app with glass cards, glass buttons and a glass tab bar
+   COLOUR blush #ebdbd3, periwinkle #bac8e0, sand #d0bea3, sage #8f917c, umbra #1f1f1f ink, white glass
+   TYPE Readex Pro for all text
+   LAYOUT laptop: phone frame centred with a short side caption; phone: app fills the screen */
+:root{color-scheme:light;--ink:#1f1f1f;--mute:#4a4742;--blush:#ebdbd3;--penna:#bac8e0;--sand:#d0bea3;--sage:#8f917c;--white:#f9f9f9;--glass:rgba(255,255,255,.56);--glass2:rgba(255,255,255,.7);--edge:rgba(255,255,255,.75);--shade:0 8px 32px rgba(70,55,40,.10)}
+*{box-sizing:border-box;min-width:0;margin:0}
+html,body{height:100%}
+body{margin:0;background:#efe6e0;color:var(--ink);font:15px/1.6 "Readex Pro",Tahoma,sans-serif;overflow-x:clip}
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:48px;padding:32px max(5vw,16px)}
+.cap{max-width:300px}
+.cap h1{font-size:40px;line-height:1.25;letter-spacing:-.01em;font-weight:700}
+.cap p{color:var(--mute);margin-top:16px;line-height:1.8}
+.sw{display:flex;gap:6px;margin-top:20px}.sw i{width:34px;height:34px;border-radius:12px;border:1px solid rgba(0,0,0,.06)}
+.phone{position:relative;width:390px;height:844px;border-radius:52px;overflow:hidden;background:#f3ece7;box-shadow:0 30px 80px rgba(60,40,30,.25),0 0 0 10px #1f1f1f}
+.bg{position:absolute;inset:0;overflow:hidden}
+.bg b{position:absolute;border-radius:50%;filter:blur(2px)}
+.app{position:absolute;inset:0;display:flex;flex-direction:column}
+.status{display:flex;justify-content:space-between;padding:14px 28px 4px;font-size:14px;font-weight:600;direction:ltr}
+.scroll{flex:1;overflow-y:auto;padding:12px 22px 132px;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:8px 0 28px}
+.top small{color:var(--mute);font-size:14px;display:block;margin-bottom:4px}
+.top h2{font-size:28px;font-weight:700;line-height:1.25;letter-spacing:-.01em}
+.card{background:var(--glass);border:1px solid var(--edge);border-radius:28px;padding:22px;margin-bottom:20px;backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);box-shadow:var(--shade),inset 0 1px 0 rgba(255,255,255,.9)}
+.card h3{font-size:17px;font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.num{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:var(--ink);color:#fff}
+.gbtn{appearance:none;font:inherit;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border-radius:18px;background:linear-gradient(160deg,rgba(255,255,255,.7),rgba(255,255,255,.22));border:1px solid var(--edge);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 4px 16px rgba(70,55,40,.10),inset 0 1px 0 #fff,inset 0 -1px 0 rgba(255,255,255,.3);transition:transform .15s,background .2s}
+.gbtn:hover{background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.35))}
+.gbtn:active{transform:scale(.97)}
+.gbtn:focus-visible,.chip:focus-visible,.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.gbtn.dark{color:#fff;background:linear-gradient(160deg,rgba(31,31,31,.95),rgba(31,31,31,.84));border-color:rgba(255,255,255,.25);box-shadow:0 8px 22px rgba(31,31,31,.25),inset 0 1px 0 rgba(255,255,255,.25)}
+.gbtn.round{width:46px;padding:0;border-radius:50%}
+.gbtn.wide{width:100%;font-weight:600;font-size:16px;min-height:54px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.field{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.45);border:1px solid var(--edge);border-radius:18px;padding:0 14px;min-height:50px}
+.field input,.field select{flex:1;border:0;background:none;font:inherit;font-size:16px;color:var(--ink);outline:0;min-height:48px}
+label.l{display:block;font-size:14px;font-weight:500;color:var(--ink);margin:18px 4px 8px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{appearance:none;font:inherit;font-size:14px;cursor:pointer;padding:9px 16px;border-radius:999px;border:1px solid rgba(31,31,31,.12);background:rgba(255,255,255,.6);color:var(--ink);backdrop-filter:blur(10px)}
+.chip[aria-pressed=true]{background:#1f1f1f;color:#fff;border-color:transparent}
+.pts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pts .gbtn{font-size:18px;font-weight:600;direction:ltr}
+.pts .gbtn[aria-pressed=true]{color:#fff;background:linear-gradient(160deg,#5f614f,#4b4d3e);border-color:rgba(255,255,255,.3)}
+.stu{display:flex;align-items:center;gap:12px}
+.av{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-weight:600;flex:none}
+.stu b{font-weight:600;display:block;line-height:1.4;font-size:15px}.stu small{color:var(--mute);font-size:13px}
+.stu .end{margin-inline-start:auto;display:flex;gap:6px}
+.list .stu{padding:14px 0;border-top:1px solid rgba(31,31,31,.08)}.list .stu:first-child{border:0}
+.meter{height:12px;border-radius:99px;background:rgba(31,31,31,.08);overflow:hidden;margin:12px 0 10px}
+.meter i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#4b4d3e,var(--sage));transition:width .4s}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--mute)}
+.big{font-size:60px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.tile{border-radius:26px;padding:20px;min-height:136px;gap:6px;font-size:14px;font-weight:500;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--edge);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.tile b{font-size:36px;font-weight:700;line-height:1}
+.sig{height:130px;border-radius:20px;background:rgba(255,255,255,.4);border:1px dashed rgba(31,31,31,.25);position:relative}
+.sig canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.sig span{position:absolute;inset:auto 0 12px;text-align:center;font-size:13px;color:var(--mute);pointer-events:none}
+.ev{display:flex;gap:12px;padding:14px 0;border-top:1px solid rgba(31,31,31,.08)}.ev:first-of-type{border:0}
+.ev .pt{margin-inline-start:auto;font-weight:700;white-space:nowrap;color:#3f4134;font-size:17px}
+.tog{appearance:none;width:50px;height:30px;border-radius:99px;background:rgba(31,31,31,.15);position:relative;cursor:pointer;border:1px solid var(--edge);flex:none;transition:background .2s}
+.tog::after{content:"";position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:right .2s}
+.tog:checked{background:var(--sage)}.tog:checked::after{right:23px}
+.set{display:flex;align-items:center;gap:16px;padding:14px 0;border-top:1px solid rgba(31,31,31,.08)}.set:first-of-type{border:0;padding-top:0}
+.set div{flex:1}.set small{display:block;color:var(--mute);font-size:13px;line-height:1.5;margin-top:2px}
+.step{display:flex;align-items:center;gap:10px}.step b{font-size:22px;width:34px;text-align:center}
+.nav{position:absolute;left:14px;right:14px;bottom:18px;display:flex;justify-content:space-around;padding:8px;border-radius:30px;background:rgba(255,255,255,.62);border:1px solid var(--edge);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);box-shadow:0 10px 30px rgba(60,40,30,.15),inset 0 1px 0 #fff}
+.tab{appearance:none;border:0;background:none;font:inherit;font-size:12px;font-weight:500;color:#3a3834;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 14px;border-radius:22px;cursor:pointer}
+.tab[aria-selected=true]{background:#1f1f1f;color:#fff}
+.err{color:#8a1c1c;font-size:14px;line-height:1.6;margin-top:14px}
+.muted{color:var(--mute);font-size:14px;padding:8px 4px}
+.gbtn:disabled{opacity:.55;cursor:wait}
+@media print{.cap,.nav,.bg,.status,.toast,.top .gbtn,[data-exp],.tiles{display:none!important}.stage{display:block;padding:0}.phone{width:auto;height:auto;box-shadow:none;border-radius:0;overflow:visible;background:#fff}.app{position:static}.scroll{overflow:visible;padding:0}.card{box-shadow:none;backdrop-filter:none;border-color:#ccc}}
+.toast{position:absolute;top:58px;left:50%;transform:translate(-50%,-140%);padding:12px 18px;border-radius:20px;background:rgba(31,31,31,.85);color:#fff;font-size:14px;backdrop-filter:blur(12px);transition:transform .35s,opacity .35s;opacity:0;white-space:nowrap;z-index:5}
+.toast.on{transform:translate(-50%,0);opacity:1}
+.login{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;justify-content:flex-end;padding:28px 22px 36px}
+.login .hero{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding-bottom:12px}
+.login h2{font-size:32px;line-height:1.3;font-weight:700}
+.login p{color:var(--mute);line-height:1.8}
+[hidden]{display:none!important}
+@media(max-width:900px){.cap{display:none}}
+@media(max-width:500px){.stage{padding:0;height:100%}.phone{width:100%;height:100svh;border-radius:0;box-shadow:none}.status{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="cap" dir="rtl">
+    <h1>سجل السلوك الإيجابي</h1>
+    <p>نموذج تفاعلي لتطبيق المعلمات، كل البطاقات شفافة والأزرار زجاجية فوق خلفية بألوان لوحة الهوية. البيانات أمثلة توضيحية.</p>
+    <div class="sw"><i style="background:#f9f9f9"></i><i style="background:#ebdbd3"></i><i style="background:#bac8e0"></i><i style="background:#d0bea3"></i><i style="background:#8f917c"></i><i style="background:#1f1f1f"></i></div>
+  </div>
+
+  <div class="phone" dir="rtl">
+    <div class="bg">
+      <b style="width:300px;height:300px;background:#bac8e0;top:-60px;left:-80px"></b>
+      <b style="width:240px;height:240px;background:#d0bea3;top:260px;right:-90px"></b>
+      <b style="width:200px;height:200px;background:#8f917c;opacity:.55;bottom:120px;left:-50px"></b>
+      <b style="width:160px;height:160px;background:#ebdbd3;bottom:-30px;right:40px"></b>
+      <b style="width:110px;height:110px;background:#bac8e0;top:520px;left:150px;opacity:.8"></b>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <!-- Login -->
+    <section class="login" id="login">
+      <div class="hero">
+        <div class="av" style="background:rgba(255,255,255,.5);border:1px solid #fff;width:60px;height:60px;border-radius:20px"><svg class="ic" style="width:28px;height:28px" viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <small style="color:var(--mute)">بوابة الكادر التعليمي</small>
+        <h2>مرحباً بكِ في سجل رصد السلوك الإيجابي</h2>
+        <p>سجّلي الدخول ببريدكِ المدرسي، وسيصلكِ رمز تحقق. التسجيل مرة واحدة فقط في أول دخول.</p>
+      </div>
+      <form class="card" id="lf" novalidate>
+        <div data-step="email"><label class="l" for="em" style="margin-top:0">البريد المدرسي</label>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg><input id="em" type="email" autocomplete="email" inputmode="email" dir="ltr" placeholder="name@school.edu.sa"></div></div>
+        <div data-step="code" hidden><p id="sentto" style="font-size:14px;color:var(--mute);line-height:1.7;margin:0 4px 4px"></p>
+        <label class="l" for="otp">رمز التحقق</label>
+        <div class="field"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><input id="otp" inputmode="numeric" autocomplete="one-time-code" dir="ltr" maxlength="10" style="letter-spacing:.4em;font-size:20px;font-weight:600" placeholder="••••••"></div></div>
+        <div data-step="name" hidden><p style="font-size:14px;color:var(--mute);line-height:1.7;margin:0 4px 4px">أهلاً بكِ! هذا دخولكِ الأول، اكتبي اسمكِ مرة واحدة فقط ليظهر في السجلات.</p>
+        <label class="l" for="fn">الاسم الكامل</label>
+        <div class="field"><input id="fn" autocomplete="name" placeholder="مثال: سارة خالد الأحمد"></div></div>
+        <p class="err" id="lerr" role="alert" hidden></p>
+        <div style="height:16px"></div>
+        <button class="gbtn dark wide" id="lbtn">إرسال رمز التحقق</button>
+        <div id="codeacts" hidden style="display:flex;gap:10px;margin-top:10px"><button type="button" class="gbtn" id="resend" style="flex:1;font-size:14px" disabled>إعادة الإرسال</button><button type="button" class="gbtn" id="chg" style="flex:1;font-size:14px">تغيير البريد</button></div>
+      </form>
+    </section>
+
+    <div class="app" id="app" hidden>
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="scroll" id="scr">
+
+        <!-- Record -->
+        <section data-v="rec">
+          <div class="top"><div><small id="hi">مرحباً</small><h2>رصد سلوك جديد</h2></div><button class="gbtn round" aria-label="تسجيل الخروج" data-out><svg class="ic" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4M10 16l-4-4 4-4M6 12h10"/></svg></button></div>
+          <div class="card"><h3><span class="num">١</span>الصف الدراسي</h3>
+            <div class="chips" id="cls"></div></div>
+          <div class="card"><h3><span class="num">٢</span>الطالبة</h3>
+            <div class="field"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg><input id="q" placeholder="ابحثي بالاسم" aria-label="البحث عن طالبة"></div>
+            <div class="list" id="pick" style="margin-top:8px"></div></div>
+          <div class="card"><h3><span class="num">٣</span>تفاصيل السلوك</h3>
+            <div class="chips" id="beh"></div>
+            <label class="l" for="note">وصف الفرصة أو السلوك</label>
+            <div class="field"><input id="note" value="المشاركة في تنظيم فعاليات اليوم الوطني"></div>
+            <label class="l">الدرجة المستحقة</label>
+            <div class="pts" id="pts"></div>
+            <div class="row" style="margin-top:14px"><b style="color:var(--ink);font-weight:600">مؤشر الإنجاز</b><span id="prog"></span></div>
+            <div class="meter"><i id="bar"></i></div>
+            <div class="row"><span>حد التميز: 12</span><span>الوسام الذهبي: 20</span></div></div>
+          <div class="card"><h3><span class="num">٤</span>التوقيع الرقمي</h3>
+            <div class="sig"><canvas id="pad"></canvas><span id="sh">وقّعي هنا بالإصبع</span></div>
+            <div style="display:flex;gap:8px;margin-top:10px"><button class="gbtn" id="clr">مسح وإعادة</button><span id="tname" style="margin-inline-start:auto;align-self:center;font-size:13px;color:var(--mute)"></span></div></div>
+          <button class="gbtn dark wide" id="save">حفظ واعتماد الرصد</button>
+          
+        </section>
+
+        <!-- Follow-up -->
+        <section data-v="rep" hidden>
+          <div class="top"><div><small id="rcls"></small><h2>المتابعة والتقارير</h2></div><button class="gbtn round" aria-label="تصفية"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button></div>
+          <div class="tiles">
+            <div class="tile" style="background:rgba(186,200,224,.55)"><small>المستوفيات</small><b id="t1">0</b><small id="t1s"></small></div>
+            <div class="tile" style="background:rgba(208,190,163,.55)"><small>متوسط الدرجات</small><b id="t2">0</b><small id="t2s"></small></div>
+          </div>
+          <div class="card"><div class="chips" id="rcl" style="margin-bottom:14px"></div><div class="chips" id="flt"></div><div class="list" id="rank" style="margin-top:10px"></div></div>
+          <div class="card" id="det" style="background:rgba(235,219,211,.5)"></div>
+          <h3 style="font-size:15px;font-weight:600;margin:4px 4px 12px">تصدير التقرير</h3><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+            <button class="gbtn" data-exp="pdf">PDF</button><button class="gbtn" data-exp="excel">Excel</button><button class="gbtn" data-exp="word">Word</button>
+          </div>
+          
+        </section>
+
+        <!-- Students -->
+        <section data-v="stu" hidden>
+          <div class="top"><div><small>إدارة القوائم</small><h2>الطالبات</h2></div><button class="gbtn round" aria-label="استيراد" id="impb" title="استيراد ملف CSV: الاسم، الصف"><svg class="ic" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg></button></div>
+          <input type="file" id="imp" accept=".csv,.txt" hidden>
+          <form class="card" id="af"><h3>إضافة طالبة</h3>
+            <label class="l" for="nn" style="margin-top:0">اسم الطالبة رباعياً</label>
+            <div class="field"><input id="nn" placeholder="مثال: لمى بنت ناصر العتيبي"></div>
+            <label class="l" for="nc">الصف والفصل</label>
+            <div class="field"><select id="nc"></select></div>
+            <div style="height:12px"></div><button class="gbtn dark wide">إضافة وحفظ</button></form>
+          <div class="card"><h3>المسجلات <small id="cnt" style="font-weight:400;color:var(--mute)"></small></h3><div class="list" id="all"></div></div>
+        </section>
+
+        <!-- Settings -->
+        <section data-v="set" hidden>
+          <div class="top"><div><small>الحساب والتخصيص</small><h2>الإعدادات</h2></div></div>
+          <div class="card" style="background:rgba(186,200,224,.45)"><div class="stu"><div class="av" id="pav" style="background:rgba(255,255,255,.6)"></div><div><b id="pname"></b><small id="psub" dir="ltr" style="display:block;text-align:right"></small></div></div>
+            <div style="display:flex;gap:8px;margin-top:14px"><button class="gbtn" style="flex:1" data-out>تسجيل الخروج</button></div></div>
+          <div class="card"><h3>نظام الرصد</h3>
+            <div class="set"><div>النصاب الفصلي للطالبة<small>الحد الأقصى للنقاط</small></div><div class="step"><button class="gbtn round" id="mn" aria-label="إنقاص">−</button><b id="mx">20</b><button class="gbtn round" id="pl" aria-label="زيادة">+</button></div></div>
+            <div class="set"><div>التوقيع الإلزامي<small>تأكيد التوقيع عند كل رصد</small></div><input type="checkbox" class="tog" id="needsig" checked aria-label="التوقيع الإلزامي"></div>
+            </div>
+          <form class="card" id="cf"><h3>الصفوف</h3><div class="chips" id="clist"></div>
+            <div style="display:flex;gap:10px;margin-top:16px"><div class="field" style="flex:1"><input id="cn" placeholder="مثال: ثاني ثانوي / 2" aria-label="اسم الصف الجديد"></div><button class="gbtn dark">إضافة صف</button></div></form>
+          <div class="card"><h3>صيغة التصدير الافتراضية</h3><div class="chips" id="fmt"></div></div>
+          <div class="card"><h3>المظهر</h3>
+            <div class="set"><div>شفافية البطاقات<small>تقوية الضباب خلف البطاقات</small></div><input type="checkbox" class="tog" id="frost" aria-label="شفافية أعلى"></div>
+            <div class="set"><div>لغة الواجهة<small>العربية</small></div></div></div>
+        </section>
+      </div>
+
+      <nav class="nav" role="tablist">
+        <button class="tab" role="tab" data-t="rec" aria-selected="true"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>الرصد</button>
+        <button class="tab" role="tab" data-t="rep" aria-selected="false"><svg class="ic" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>المتابعة</button>
+        <button class="tab" role="tab" data-t="stu" aria-selected="false"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0112 0M16 4a3.5 3.5 0 010 7M21 20a6 6 0 00-3-5"/></svg>الطالبات</button>
+        <button class="tab" role="tab" data-t="set" aria-selected="false"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>الإعدادات</button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+{
+// ===== إعداد الاتصال: انسخي القيمتين من Supabase > Project Settings > API =====
+const SUPABASE_URL = "https://mipoiwfbqsqkfqkzjicb.supabase.co";   // مثال: https://abcd1234.supabase.co
+const SUPABASE_KEY = "sb_publishable_FIlbYRr7tGPRNUq-oaO5kQ_-R5uE3hy";   // المفتاح العام publishable (sb_publishable_...) وليس مفتاح secret
+// ============================================================================
+
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const tints=["rgba(186,200,224,.7)","rgba(208,190,163,.7)","rgba(235,219,211,.9)","rgba(143,145,124,.45)"];
+const BEH=["المشاركة الصفية","المبادرة","التعاون","العمل التطوعي"];
+const FMT=["pdf","excel","word"],FMTL=["PDF","Excel","Word"];
+const db=SUPABASE_URL&&SUPABASE_KEY&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+let me=null,email="",classes=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,pts=3,beh=3,flt=0,signup=false,toastT,maxT;
+
+const max=()=>me?.max_points||20;
+const sc=id=>scores[id]||0;
+const first=n=>String(n).split(" ")[0];
+const ini=n=>String(n).trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("");
+const cname=id=>classes.find(c=>c.id===id)?.name||"";
+const fmtDate=d=>new Date(d).toLocaleDateString("ar-SA-u-ca-islamic-umalqura",{day:"numeric",month:"numeric",year:"numeric"});
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),2600)};
+const fail=(e,m)=>{if(e)console.error(e);toast(m||"تعذّر الاتصال بقاعدة البيانات، تحققي من الإنترنت وحاولي مرة أخرى")};
+const chips=(el,arr,cur,fn)=>{el.innerHTML=arr.map((a,i)=>`<button type="button" class="chip" aria-pressed="${i===cur}" data-i="${i}">${esc(a)}</button>`).join("");el.onclick=e=>{const b=e.target.closest(".chip");if(b){[...el.children].forEach(c=>c.setAttribute("aria-pressed",c===b));fn(+b.dataset.i)}}};
+const row=(s,end)=>`<div class="stu" data-id="${s.id}"><div class="av" style="background:${tints[s.id%4]}">${esc(ini(s.full_name))}</div><div><b>${esc(s.full_name)}</b><small>${esc(cname(s.class_id))}</small></div><div class="end">${end}</div></div>`;
+const busy=(b,on)=>{if(b)b.disabled=on};
+
+// ---------- البيانات ----------
+async function loadAll(){
+  const [c,s,r]=await Promise.all([
+    db.from("classes").select("id,name").order("name"),
+    db.from("students").select("id,full_name,class_id,created_by").order("full_name"),
+    db.from("student_scores").select("student_id,total")]);
+  const e=c.error||s.error||r.error; if(e) return fail(e);
+  classes=c.data;students=s.data;scores=Object.fromEntries(r.data.map(x=>[x.student_id,x.total]));
+  if(!classes.some(x=>x.id===cls)) cls=classes[0]?.id??null;
+  if(!classes.some(x=>x.id===rcls)) rcls=cls;
+  renderAll();
+}
+function renderAll(){
+  chips($("#cls"),classes.map(c=>c.name),classes.findIndex(c=>c.id===cls),i=>{cls=classes[i].id;sel=null;pick()});
+  chips($("#rcl"),classes.map(c=>c.name),classes.findIndex(c=>c.id===rcls),i=>{rcls=classes[i].id;det=null;rank()});
+  if(!classes.length) $("#cls").innerHTML=`<p class="muted">لا توجد صفوف بعد. أضيفيها من الإعدادات.</p>`;
+  $("#nc").innerHTML=classes.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("");
+  $("#clist").innerHTML=classes.map(c=>`<span class="chip">${esc(c.name)}</span>`).join("")||`<p class="muted">لا توجد صفوف بعد.</p>`;
+  lists();
+}
+const lists=()=>{pick();rank();all()};
+
+// ---------- الرصد ----------
+function pick(){
+  const q=$("#q").value.trim(),inC=students.filter(s=>s.class_id===cls),l=inC.filter(s=>s.full_name.includes(q));
+  if(!l.some(s=>s.id===sel)) sel=l[0]?.id??null;
+  $("#pick").innerHTML=l.length?l.map(s=>row(s,s.id===sel?`<span class="chip" aria-pressed="true" style="pointer-events:none">مختارة</span>`:`<span style="font-size:13px;color:var(--mute);white-space:nowrap">${sc(s.id)} / ${max()}</span>`)).join("")
+    :`<p class="muted">${inC.length?"لا توجد طالبة بهذا الاسم في هذا الصف.":"لا توجد طالبات في هذا الصف بعد. أضيفيهن من تبويب الطالبات."}</p>`;
+  meter();
+}
+function meter(){
+  if(sel==null){$("#prog").textContent="اختاري طالبة";$("#bar").style.width="0";return}
+  const t=sc(sel),v=Math.min(t+pts,max());$("#prog").textContent=`${t} + ${pts} = ${v} / ${max()}`;$("#bar").style.width=v/max()*100+"%";
+}
+$("#pick").onclick=e=>{const r=e.target.closest(".stu");if(r){sel=+r.dataset.id;pick()}};
+$("#q").oninput=pick;
+chips($("#beh"),BEH,beh,i=>beh=i);
+$("#pts").innerHTML=[1,2,3,5].map(p=>`<button type="button" class="gbtn" aria-pressed="${p===pts}" data-p="${p}">+${p}</button>`).join("");
+$("#pts").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;pts=+b.dataset.p;$$("#pts .gbtn").forEach(x=>x.setAttribute("aria-pressed",x===b));meter()};
+
+// التوقيع
+const c=$("#pad"),g=c.getContext("2d");let drawn=false,down=false;
+const fit=()=>{const r=c.getBoundingClientRect();if(!r.width)return;c.width=r.width*2;c.height=r.height*2;g.scale(2,2);g.lineWidth=2.4;g.lineCap="round";g.strokeStyle="#1f1f1f";drawn=false;$("#sh").hidden=false};
+const P=e=>{const r=c.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
+c.onpointerdown=e=>{down=true;c.setPointerCapture(e.pointerId);g.beginPath();g.moveTo(...P(e))};
+c.onpointermove=e=>{if(!down)return;g.lineTo(...P(e));g.stroke();if(!drawn){drawn=true;$("#sh").hidden=true}};
+c.onpointerup=()=>down=false;
+$("#clr").onclick=fit;
+
+$("#save").onclick=async()=>{
+  if(sel==null) return toast("اختاري الطالبة أولاً");
+  const d=$("#note").value.trim(); if(!d) return toast("اكتبي وصف السلوك أولاً");
+  if($("#needsig").checked&&!drawn) return toast("الرجاء التوقيع قبل الاعتماد");
+  const b=$("#save");busy(b,true);
+  const {error}=await db.from("behavior_records").insert({student_id:sel,category:BEH[beh],description:d,points:pts,signature:drawn?c.toDataURL("image/png"):null});
+  busy(b,false);
+  if(error) return fail(error,"لم يُحفظ الرصد، تحققي من الاتصال وحاولي مرة أخرى");
+  scores[sel]=sc(sel)+pts;
+  toast(`حُفظ +${pts} للطالبة ${first(students.find(s=>s.id===sel).full_name)}`);
+  fit();pick();rank();
+};
+
+// ---------- المتابعة ----------
+const classRows=()=>students.filter(s=>s.class_id===rcls).sort((a,b)=>sc(b.id)-sc(a.id));
+function rank(){
+  const m=max(),inC=classRows(),done=inC.filter(s=>sc(s.id)>=m).length;
+  const avg=inC.length?inC.reduce((a,s)=>a+sc(s.id),0)/inC.length:0;
+  $("#rcls").textContent=cname(rcls)||"لا توجد صفوف";
+  $("#t1").textContent=done;$("#t1s").textContent=`من ${inC.length} طالبة`;
+  $("#t2").textContent=avg.toFixed(1);$("#t2s").textContent=`من ${m} درجة`;
+  const l=inC.filter(s=>flt===0||(flt===1?sc(s.id)>=m:sc(s.id)<m));
+  $("#rank").innerHTML=l.length?l.map(s=>row(s,`<b style="font-size:16px;white-space:nowrap">${sc(s.id)}<small> / ${m}</small></b>`)).join(""):`<p class="muted">لا توجد طالبات ضمن هذا التصنيف.</p>`;
+  if(!inC.some(s=>s.id===det)) det=l[0]?.id??null;
+  detail();
+}
+chips($("#flt"),["الكل","المستوفيات","غير المستوفيات"],0,i=>{flt=i;rank()});
+$("#rank").onclick=e=>{const r=e.target.closest(".stu");if(r){det=+r.dataset.id;detail();$("#det").scrollIntoView({behavior:"smooth",block:"start"})}};
+async function detail(){
+  const box=$("#det");
+  if(det==null){box.innerHTML=`<p class="muted">اختاري طالبة من القائمة لعرض سجلها.</p>`;return}
+  const id=det,s=students.find(x=>x.id===id);
+  box.innerHTML=`<div class="stu"><div class="av" style="background:rgba(255,255,255,.6)">${esc(ini(s.full_name))}</div><div><b>${esc(s.full_name)}</b><small>${esc(cname(s.class_id))}</small></div></div>
+    <div style="display:flex;align-items:flex-end;gap:8px;margin:18px 0 8px"><span class="big">${sc(id)}</span><span style="color:var(--mute);padding-bottom:8px">/ ${max()} درجة</span></div><div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>`;
+  const {data,error}=await db.from("behavior_records").select("id,category,description,points,created_at,profiles(full_name)").eq("student_id",id).order("created_at",{ascending:false});
+  if(id!==det) return;
+  if(error){$("#evs").innerHTML=`<p class="muted">تعذّر تحميل السجلات.</p>`;return fail(error)}
+  $("#evs").innerHTML=data.length?data.map(r=>`<div class="ev"><div><b style="font-weight:500">${esc(r.description)}</b><br><small style="color:var(--mute)">${esc(r.category)} · ${fmtDate(r.created_at)} · ${esc(r.profiles?.full_name)}</small></div><span class="pt">+${r.points}</span></div>`).join(""):`<p class="muted">لا توجد سجلات لهذه الطالبة بعد.</p>`;
+}
+
+// التصدير
+const dl=(name,type,text)=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+function exportAs(kind){
+  const l=classRows(),m=max(),title=`سجل درجات السلوك الإيجابي - ${cname(rcls)}`;
+  if(!l.length) return toast("لا توجد طالبات في هذا الصف للتصدير");
+  if(kind==="pdf") return window.print();
+  if(kind==="excel"){
+    const q=v=>`"${String(v).replace(/"/g,'""')}"`;
+    dl(`${title}.csv`,"text/csv;charset=utf-8","﻿"+[["الاسم","الصف","المجموع","النصاب"],...l.map(s=>[s.full_name,cname(s.class_id),sc(s.id),m])].map(r=>r.map(q).join(",")).join("\r\n"));
+  } else {
+    dl(`${title}.doc`,"application/msword",`<html><head><meta charset="utf-8"></head><body dir="rtl" style="font-family:Tahoma"><h2>${esc(title)}</h2><table border="1" cellpadding="6" style="border-collapse:collapse"><tr><th>الاسم</th><th>المجموع</th><th>النصاب</th></tr>${l.map(s=>`<tr><td>${esc(s.full_name)}</td><td>${sc(s.id)}</td><td>${m}</td></tr>`).join("")}</table></body></html>`);
+  }
+  toast("تم تنزيل الملف");
+}
+$$("[data-exp]").forEach(b=>b.onclick=()=>exportAs(b.dataset.exp));
+
+// ---------- الطالبات ----------
+const del=`<button type="button" class="gbtn round" style="width:38px;min-height:38px" aria-label="حذف" data-del><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg></button>`;
+function all(){
+  $("#all").innerHTML=students.length?students.map(s=>row(s,s.created_by===me?.id?del:"")).join(""):`<p class="muted">لم تُضف أي طالبة بعد. استخدمي النموذج أعلاه أو استوردي ملف CSV.</p>`;
+  $("#cnt").textContent=`${students.length} طالبة`;
+}
+$("#all").onclick=async e=>{
+  const b=e.target.closest("[data-del]");if(!b)return;
+  const id=+b.closest(".stu").dataset.id,s=students.find(x=>x.id===id);
+  if(b.dataset.armed!=="1"){b.dataset.armed="1";toast(`اضغطي مرة أخرى لحذف ${first(s.full_name)}`);setTimeout(()=>delete b.dataset.armed,3000);return}
+  busy(b,true);
+  const {data,error}=await db.from("students").delete().eq("id",id).select("id");
+  busy(b,false);
+  if(error?.code==="23503") return toast("لا يمكن حذف طالبة لها سجلات سلوك محفوظة");
+  if(error||!data.length) return fail(error,"لا يمكن حذف طالبة أضافتها معلمة أخرى");
+  students=students.filter(x=>x.id!==id);delete scores[id];lists();toast(`حُذفت ${first(s.full_name)} من القائمة`);
+};
+$("#af").onsubmit=async e=>{
+  e.preventDefault();
+  const n=$("#nn").value.trim().replace(/\s+/g," "),cid=+$("#nc").value;
+  if(n.split(" ").length<2) return toast("اكتبي الاسم الكامل للطالبة");
+  if(!cid) return toast("أضيفي صفاً من الإعدادات أولاً");
+  const b=e.submitter;busy(b,true);
+  const {data,error}=await db.from("students").insert({full_name:n,class_id:cid}).select("id,full_name,class_id,created_by").single();
+  busy(b,false);
+  if(error) return fail(error,"لم تُحفظ الطالبة، حاولي مرة أخرى");
+  students.push(data);students.sort((a,b)=>a.full_name.localeCompare(b.full_name,"ar"));
+  $("#nn").value="";lists();toast("أُضيفت الطالبة إلى السجل");
+};
+$("#impb").onclick=()=>$("#imp").click();
+$("#imp").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  const lines=(await f.text()).replace(/^﻿/,"").split(/\r?\n/).map(l=>l.split(/[,;\t،]/).map(x=>x.trim().replace(/^"|"$/g,""))).filter(p=>p[0]&&p[1]&&p[0]!=="الاسم");
+  if(!lines.length) return toast("لم أجد أسماء. الصيغة: الاسم، الصف في كل سطر");
+  const newC=[...new Set(lines.map(p=>p[1]))].filter(n=>!classes.some(c=>c.name===n));
+  if(newC.length){const {error}=await db.from("classes").insert(newC.map(name=>({name})));if(error)return fail(error,"تعذّر إنشاء الصفوف الجديدة من الملف")}
+  if(newC.length) await loadAll();
+  const {error}=await db.from("students").insert(lines.map(p=>({full_name:p[0],class_id:classes.find(c=>c.name===p[1]).id})));
+  if(error) return fail(error,"تعذّر استيراد الطالبات، تأكدي من صيغة الملف");
+  await loadAll();toast(`استُوردت ${lines.length} طالبة`);
+};
+
+// ---------- الإعدادات ----------
+const setMax=v=>{me.max_points=Math.max(5,Math.min(40,v));$("#mx").textContent=me.max_points;pick();rank();
+  clearTimeout(maxT);maxT=setTimeout(async()=>{const {error}=await db.from("profiles").update({max_points:me.max_points}).eq("id",me.id);if(error)fail(error,"لم يُحفظ النصاب")},600)};
+$("#mn").onclick=()=>setMax(max()-1);$("#pl").onclick=()=>setMax(max()+1);
+$("#cf").onsubmit=async e=>{
+  e.preventDefault();const n=$("#cn").value.trim();if(!n)return toast("اكتبي اسم الصف");
+  if(classes.some(c=>c.name===n)) return toast("هذا الصف موجود مسبقاً");
+  const {error}=await db.from("classes").insert({name:n});
+  if(error) return fail(error,"لم يُحفظ الصف");
+  $("#cn").value="";await loadAll();toast("أُضيف الصف");
+};
+$("#frost").onchange=e=>document.querySelector(".phone").style.setProperty("--glass",e.target.checked?"rgba(255,255,255,.34)":"rgba(255,255,255,.56)");
+
+// ---------- الدخول برمز التحقق ----------
+// الخطوات: البريد ← رمز التحقق من البريد ← الاسم (في الدخول الأول فقط)
+let step="email",pending=null,cdT;
+const lerr=m=>{$("#lerr").hidden=!m;$("#lerr").textContent=m||""};
+const LBL={email:"إرسال رمز التحقق",code:"تحقق والدخول",name:"حفظ ومتابعة"};
+function setStep(s){
+  step=s;$$("[data-step]").forEach(d=>d.hidden=d.dataset.step!==s);
+  $("#lbtn").textContent=LBL[s];$("#codeacts").hidden=s!=="code";lerr("");
+  ({email:$("#em"),code:$("#otp"),name:$("#fn")})[s].focus();
+}
+const authMsg=e=>{const m=e?.message||"";
+  if(/rate limit|security purposes|seconds/i.test(m)) return "طلبتِ رموزاً كثيرة. انتظري دقيقة ثم حاولي مرة أخرى.";
+  if(/expired|invalid|token/i.test(m)) return "الرمز غير صحيح أو انتهت صلاحيته. تأكدي منه أو اطلبي رمزاً جديداً.";
+  if(/signups not allowed|not allowed for otp/i.test(m)) return "هذا البريد غير مسجل في النظام. اطلبي من مسؤولة النظام إضافتكِ.";
+  if(/sending|smtp|email/i.test(m)) return "تعذّر إرسال الرسالة إلى هذا البريد الآن. تأكدي من البريد أو حاولي لاحقاً.";
+  return "تعذّر الدخول الآن. تحققي من الإنترنت وحاولي مرة أخرى.";
+};
+function cooldown(n){
+  const b=$("#resend");clearInterval(cdT);b.disabled=true;
+  const tick=()=>{b.textContent=n>0?`إعادة الإرسال (${n})`:"إعادة إرسال الرمز";if(n--<=0){clearInterval(cdT);b.disabled=false}};
+  tick();cdT=setInterval(tick,1000);
+}
+async function sendCode(){
+  const em=$("#em").value.trim();
+  const {error}=await db.auth.signInWithOtp({email:em,options:{shouldCreateUser:true}});
+  if(error){lerr(authMsg(error));return false}
+  $("#sentto").textContent=`أرسلنا رمز التحقق إلى ${em}. افتحي بريدكِ واكتبي الرمز هنا.`;
+  cooldown(60);return true;
+}
+$("#resend").onclick=async()=>{lerr("");if(await sendCode())toast("أُرسل رمز جديد إلى بريدكِ")};
+$("#chg").onclick=()=>{clearInterval(cdT);$("#otp").value="";setStep("email")};
+$("#otp").oninput=e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,10)};
+$("#lf").onsubmit=async e=>{
+  e.preventDefault();lerr("");
+  if(!db) return lerr("لم يُربط التطبيق بقاعدة البيانات بعد: ضعي رابط المشروع والمفتاح في أعلى الكود.");
+  const b=$("#lbtn");
+  if(step==="email"){
+    if(!/^\S+@\S+\.\S+$/.test($("#em").value.trim())) return lerr("اكتبي بريداً إلكترونياً صحيحاً، مثل name@school.edu.sa");
+    busy(b,true);const ok=await sendCode();busy(b,false);
+    if(ok){const t=$("#sentto").textContent;setStep("code");$("#sentto").textContent=t}
+  } else if(step==="code"){
+    const token=$("#otp").value.trim();
+    if(token.length<6) return lerr("اكتبي رمز التحقق كاملاً كما وصلكِ في البريد.");
+    busy(b,true);
+    const {data,error}=await db.auth.verifyOtp({email:$("#em").value.trim(),token,type:"email"});
+    busy(b,false);
+    if(error) return lerr(authMsg(error));
+    clearInterval(cdT);$("#otp").value="";enter(data.user);
+  } else {
+    const fn=$("#fn").value.trim().replace(/\s+/g," ");
+    if(fn.split(" ").length<2) return lerr("اكتبي اسمكِ الكامل كما سيظهر في السجلات.");
+    busy(b,true);
+    const {data,error}=await db.from("profiles").insert({id:pending.id,full_name:fn}).select().single();
+    busy(b,false);
+    if(error) return lerr("تعذّر حفظ اسمكِ. حاولي مرة أخرى.");
+    openApp(data,pending);
+  }
+};
+async function enter(user){
+  const {data,error}=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();
+  if(error){$("#login").hidden=false;$("#app").hidden=true;setStep("email");return lerr(authMsg(error))}
+  if(!data){pending=user;$("#login").hidden=false;$("#app").hidden=true;setStep("name");return}
+  openApp(data,user);
+}
+async function openApp(profile,user){
+  me=profile;email=user.email;pending=null;
+  $("#hi").textContent=`مرحباً، أ. ${me.full_name}`;$("#tname").textContent=`أ. ${me.full_name}`;
+  $("#pname").textContent=`أ. ${me.full_name}`;$("#psub").textContent=email;$("#pav").textContent=ini(me.full_name);
+  $("#mx").textContent=max();
+  chips($("#fmt"),FMTL,FMT.indexOf(me.export_format),async i=>{me.export_format=FMT[i];const {error}=await db.from("profiles").update({export_format:FMT[i]}).eq("id",me.id);error?fail(error):toast("صيغة التصدير: "+FMTL[i])});
+  $("#login").hidden=true;$("#app").hidden=false;go("rec");
+  await loadAll();
+}
+
+// ---------- التنقل ----------
+const go=v=>{$$("[data-v]").forEach(s=>s.hidden=s.dataset.v!==v);$$(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.t===v));$("#scr").scrollTop=0;if(v==="rec")requestAnimationFrame(fit)};
+$$(".tab").forEach(t=>t.onclick=()=>{go(t.dataset.t);if(me)loadAll()});
+document.addEventListener("click",async e=>{
+  if(!e.target.closest("[data-out]"))return;
+  await db?.auth.signOut();me=null;students=[];scores={};
+  $("#app").hidden=true;$("#login").hidden=false;setStep("email");
+});
+
+(async()=>{
+  if(!db) return lerr("لم يُربط التطبيق بقاعدة البيانات بعد: ضعي رابط المشروع والمفتاح في أعلى الكود.");
+  const {data:{session}}=await db.auth.getSession();
+  if(session) enter(session.user);
+})();
+}
+</script>
+</body>
+</html>
