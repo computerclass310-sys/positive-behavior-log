@@ -469,7 +469,6 @@ const max=()=>me?.max_points||20;
 const exl=()=>Math.round(max()*.6);
 const sc=id=>scores[id]||0;
 const first=n=>String(n).split(" ")[0];
-const ini=n=>String(n||"").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("");
 const cname=id=>classes.find(c=>c.id===id)?.name||"";
 const cparts=id=>{const n=cname(id).split(" ");return[n[0]?n[0]+" ثانوي":"-",n.slice(1).join(" ")||"-"]};
 const fmtDate=d=>new Date(d).toLocaleDateString("ar-SA-u-ca-islamic-umalqura",{day:"numeric",month:"numeric",year:"numeric"});
@@ -480,8 +479,8 @@ const toast=(m,ms=2800)=>{const t=$("#toast");t.textContent=m;t.classList.add("o
 const fail=(e,m)=>{if(e)console.error(e);toast(m||"تعذّر الاتصال بقاعدة البيانات، تحققي من الإنترنت وحاولي مرة أخرى")};
 const busy=(b,on)=>{if(b)b.disabled=on};
 const chips=(el,arr,cur,fn)=>{el.innerHTML=arr.map((a,i)=>`<button type="button" class="chip" aria-pressed="${i===cur}" data-i="${i}">${esc(a)}</button>`).join("");el.onclick=e=>{const b=e.target.closest(".chip");if(b){[...el.children].forEach(c=>c.setAttribute("aria-pressed",c===b));fn(+b.dataset.i)}}};
-const avatar=(s,bg)=>`<div class="av" style="background:${bg||tints[s.id%4]}">${esc(ini(s.full_name))}</div>`;
-const row=(s,end,sub)=>`<div class="stu" data-id="${s.id}">${avatar(s)}<div><b>${esc(s.full_name)}</b><small>${sub??esc(cname(s.class_id))}</small></div><div class="end">${end}</div></div>`;
+
+const row=(s,end,sub)=>`<div class="stu" data-id="${s.id}"><div><b>${esc(s.full_name)}</b><small>${sub??esc(cname(s.class_id))}</small></div><div class="end">${end}</div></div>`;
 const CHEV='<svg class="ic chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
 const primaryId=()=>assigned.find(a=>a.is_primary)?.class_id??null;
 const myClasses=()=>classes.filter(c=>assigned.some(a=>a.class_id===c.id)).sort((a,b)=>(b.id===primaryId())-(a.id===primaryId())||a.id-b.id);
@@ -632,7 +631,7 @@ async function detail(){
   if(det==null){box.innerHTML=`<p class="muted">اختاري طالبة من القائمة لعرض تقريرها.</p>`;return}
   const id=det,s=students.find(x=>x.id===id),[g,sec]=cparts(s.class_id);
   box.innerHTML=`<div class="doc"><div><small>المملكة العربية السعودية</small><small>${esc(school()||"أضيفي اسم المدرسة من الإعدادات")}</small><b>سجل درجات السلوك الإيجابي</b></div><span class="ibox">${I.bank}</span></div>
-    <div class="stu">${avatar(s,"rgba(255,255,255,.7)")}<div><b style="font-size:17px">${esc(s.full_name)}</b><small>${esc(cname(s.class_id))}</small></div><div class="total"><small>المجموع النهائي</small><b>${sc(id)}</b> <small style="display:inline">/ ${max()} درجة</small></div></div>
+    <div class="stu"><div><b style="font-size:17px">${esc(s.full_name)}</b><small>${esc(cname(s.class_id))}</small></div><div class="total"><small>المجموع النهائي</small><b>${sc(id)}</b> <small style="display:inline">/ ${max()} درجة</small></div></div>
     <div class="kv"><div><small>الصف الدراسي</small><b>${esc(g)}</b></div><div><small>الفصل</small><b>${esc(sec)}</b></div></div>
     <div class="subh">تفاصيل الفرص والمشاركات المرصودة<span class="badge" id="evc">…</span></div>
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
