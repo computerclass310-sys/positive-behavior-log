@@ -221,3 +221,27 @@ create table public.teacher_devices (
 );
 alter table public.teacher_devices enable row level security;
 revoke all on public.teacher_devices from anon, authenticated;
+
+-- الصف الواحد يُسند لمعلمتين على الأكثر
+create or replace function public.enforce_class_teacher_limit()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if tg_op = 'UPDATE' and new.class_id = old.class_id then return new; end if;
+  perform 1 from public.classes where id = new.class_id for update;
+  if (select count(*) from public.teacher_classes
+      where class_id = new.class_id and teacher_id <> new.teacher_id) >= 2 then
+    raise exception 'class_full' using errcode = 'P0001', hint = 'A class can be assigned to two teachers at most';
+  end if;
+  return new;
+end $$;
+revoke all on function public.enforce_class_teacher_limit() from public, anon, authenticated;
+create trigger teacher_classes_max_two
+  before insert or update of class_id on public.teacher_classes
+  for each row execute function public.enforce_class_teacher_limit();
+-- عدد المعلمات لكل صف (أعداد فقط) ليعرض التطبيق الصفوف المكتملة
+create or replace function public.class_load()
+returns table (class_id bigint, teachers int) language sql stable security definer set search_path = '' as $$
+  select class_id, count(*)::int from public.teacher_classes group by class_id
+$$;
+revoke all on function public.class_load() from public, anon;
+grant execute on function public.class_load() to authenticated;

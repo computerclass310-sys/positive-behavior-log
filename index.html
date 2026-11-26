@@ -71,6 +71,7 @@ label.l small{margin-inline-start:auto;font-weight:400;font-size:12px;color:var(
 button.chip:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(70,55,40,.16),inset 0 1px 0 #fff}
 button.chip:active{transform:translateY(1px) scale(.96);box-shadow:inset 0 2px 5px rgba(31,31,31,.15)}
 span.chip{box-shadow:none}
+.chip:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 .chip[aria-pressed=true]{background:#1f1f1f;color:#fff;border-color:transparent;box-shadow:0 6px 14px rgba(31,31,31,.28)}
 .chip i{width:7px;height:7px;border-radius:50%;background:var(--ink);display:inline-block}
 .pts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -512,7 +513,7 @@ const HEAD_LINES=["المملكة العربية السعودية","وزارة �
 const FMT=["pdf","excel","word"],FMTL=["PDF","Excel","Word"];
 const TITLES={rec:"الرصد",rep:"المتابعة",stu:"الطالبات",set:"الإعدادات"};
 const db=SUPABASE_URL&&SUPABASE_KEY&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
-let lastSig=null,me=null,email="",classes=[],assigned=[],fpick=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,detRecs=[],pts=2,flt=0,editId=null,evFile=null,lastRec=null,toastT,maxT;
+let lastSig=null,me=null,email="",classes=[],assigned=[],load={},fpick=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,detRecs=[],pts=2,flt=0,editId=null,evFile=null,lastRec=null,toastT,maxT;
 const prefs={needsig:true,notify:true,frost:false};
 try{Object.assign(prefs,JSON.parse(localStorage.getItem("bl-prefs")||"{}"))}catch(e){}
 const savePrefs=()=>{try{localStorage.setItem("bl-prefs",JSON.stringify(prefs))}catch(e){}};
@@ -532,6 +533,12 @@ const tname=()=>`أ. ${me?.full_name||""}`;
 const school=()=>SCHOOL;
 const toast=(m,ms=2800)=>{const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),ms)};
 const fail=(e,m)=>{if(e)console.error(e);toast(m||"تعذّر الاتصال بقاعدة البيانات، تحققي من الإنترنت وحاولي مرة أخرى")};
+// الصف الواحد يُسند لمعلمتين على الأكثر (يُفرض أيضاً في قاعدة البيانات)
+const MAXT=2,FULLMSG="هذا الصف مسند لمعلمتين، ولا يمكن إسناده لأكثر من معلمتين.";
+const isFull=e=>/class_full/.test(e?.message||"");
+const fullCls=id=>(load[id]||0)>=MAXT&&!assigned.some(a=>a.class_id===id);
+async function loadLoad(){const {data,error}=await db.rpc("class_load");if(!error)load=Object.fromEntries((data||[]).map(x=>[x.class_id,x.teachers]));return !error}
+const optCls=c=>fullCls(c.id)?`<option value="${c.id}" disabled>${esc(c.name)} · مكتمل (معلمتان)</option>`:`<option value="${c.id}">${esc(c.name)}</option>`;
 const busy=(b,on)=>{if(b)b.disabled=on};
 const chips=(el,arr,cur,fn)=>{el.innerHTML=arr.map((a,i)=>`<button type="button" class="chip" aria-pressed="${i===cur}" data-i="${i}">${esc(a)}</button>`).join("");el.onclick=e=>{const b=e.target.closest(".chip");if(b){[...el.children].forEach(c=>c.setAttribute("aria-pressed",c===b));fn(+b.dataset.i)}}};
 
@@ -547,7 +554,7 @@ async function loadAll(){
     db.from("classes").select("id,name").order("id"),
     db.from("students").select("id,full_name,class_id,created_by").order("full_name"),
     db.from("student_teacher_scores").select("student_id,total").eq("teacher_id",me.id),
-    db.from("teacher_classes").select("class_id,is_primary").eq("teacher_id",me.id)]);
+    db.from("teacher_classes").select("class_id,is_primary").eq("teacher_id",me.id),loadLoad()]);
   const e=c.error||s.error||r.error||a.error; if(e) return fail(e);
   classes=c.data;students=s.data;assigned=a.data;scores=Object.fromEntries(r.data.map(x=>[x.student_id,x.total]));
   const mc=myClasses();
@@ -908,8 +915,9 @@ function renderAssign(){
   $("#anone").hidden=!!mc.length;$("#awrap").hidden=!mc.length;
   $("#alist").innerHTML=mc.map(a=>`<div class="arow${a.is_primary?" main":""}" data-cid="${a.class_id}"><i class="dot"></i><div><span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><b>${esc(a.c.name)}</b>${a.is_primary?`<span class="badge" style="margin:0">الرئيسي</span>`:""}</span><small>${cnt(a.class_id)} طالبة</small></div><button type="button" class="gbtn icon" data-aedit aria-label="تغيير ${esc(a.c.name)}">${I.edit}</button><button type="button" class="gbtn icon danger" data-adel aria-label="إلغاء إسناد ${esc(a.c.name)}">${I.del}</button></div>`).join("");
   const free=classes.filter(c=>!assigned.some(a=>a.class_id===c.id));
-  $("#addSel").innerHTML=free.length?`<option value="">اختاري صفاً لربطه…</option>`+free.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join(""):`<option value="">كل الصفوف مسندة إليكِ</option>`;
-  $("#addSel").disabled=!free.length;$("#addAssign").disabled=!free.length;
+  const open=free.filter(c=>!fullCls(c.id));
+  $("#addSel").innerHTML=free.length?`<option value="">${open.length?"اختاري صفاً لربطه…":"كل الصفوف الأخرى مسندة لمعلمتين"}</option>`+free.map(optCls).join(""):`<option value="">كل الصفوف مسندة إليكِ</option>`;
+  $("#addSel").disabled=!open.length;$("#addAssign").disabled=!open.length;
 }
 const tc=()=>db.from("teacher_classes");
 async function setPrimary(id){
@@ -920,8 +928,10 @@ async function setPrimary(id){
 }
 $("#addAssign").onclick=async()=>{
   const id=+$("#addSel").value;if(!id)return toast("اختاري صفاً من القائمة أولاً");
+  if(fullCls(id))return toast(FULLMSG,4000);
   const main=!assigned.length,{error}=await tc().insert({class_id:id,is_primary:main});
-  if(error)return fail(error,"لم يُربط الصف");
+  if(error){if(isFull(error)){load[id]=MAXT;renderAssign()}return fail(error,isFull(error)?FULLMSG:"لم يُربط الصف")}
+  load[id]=(load[id]||0)+1;
   assigned.push({class_id:id,is_primary:main});if(main){cls=rcls=id}renderAll();toast(`رُبط ${cname(id)} بصفوفكِ`);
 };
 $("#alist").onclick=async e=>{
@@ -931,22 +941,24 @@ $("#alist").onclick=async e=>{
     if(del.dataset.armed!=="1"){del.dataset.armed="1";toast(`اضغطي مرة أخرى لإلغاء إسناد ${cname(id)}`);setTimeout(()=>delete del.dataset.armed,3000);return}
     const wasP=primaryId()===id,{error}=await tc().delete().eq("teacher_id",me.id).eq("class_id",id);
     if(error)return fail(error,"لم يُلغَ الإسناد");
-    assigned=assigned.filter(a=>a.class_id!==id);
+    assigned=assigned.filter(a=>a.class_id!==id);load[id]=Math.max(0,(load[id]||1)-1);
     if(wasP&&assigned.length){const n=assigned[0].class_id,u=await tc().update({is_primary:true}).eq("teacher_id",me.id).eq("class_id",n);if(!u.error)assigned[0].is_primary=true}
     const mc=myClasses();if(!mc.some(c=>c.id===rcls))rcls=primaryId()??mc[0]?.id??null;
     renderAll();toast(`أُلغي إسناد ${cname(id)}. الطالبات والسجلات باقية كما هي.`,3500);return;
   }
   if(e.target.closest("[data-aedit]")){
-    const free=classes.filter(c=>!assigned.some(a=>a.class_id===c.id));
-    if(!free.length)return toast("لا توجد صفوف أخرى للاستبدال");
-    r.querySelector("div").innerHTML=`<div class="field sel" style="min-height:42px"><select data-swap aria-label="استبدال ${esc(cname(id))}">${free.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select>${CHEV}</div><div style="display:flex;gap:6px;margin-top:8px"><button type="button" class="gbtn sm dark" data-swapok>حفظ</button><button type="button" class="gbtn sm" data-swapno>إلغاء</button></div>`;
+    const free=classes.filter(c=>!assigned.some(a=>a.class_id===c.id)),open=free.filter(c=>!fullCls(c.id));
+    if(!open.length)return toast(free.length?"كل الصفوف الأخرى مسندة لمعلمتين":"لا توجد صفوف أخرى للاستبدال",3500);
+    r.querySelector("div").innerHTML=`<div class="field sel" style="min-height:42px"><select data-swap aria-label="استبدال ${esc(cname(id))}">${[...open,...free.filter(c=>fullCls(c.id))].map(optCls).join("")}</select>${CHEV}</div><div style="display:flex;gap:6px;margin-top:8px"><button type="button" class="gbtn sm dark" data-swapok>حفظ</button><button type="button" class="gbtn sm" data-swapno>إلغاء</button></div>`;
     r.querySelectorAll("[data-aedit],[data-adel]").forEach(x=>x.hidden=true);return;
   }
   if(e.target.closest("[data-swapno]"))return renderAssign();
   if(!e.target.closest("button,select")&&!r.querySelector("[data-swap]")) return setPrimary(id);
   if(e.target.closest("[data-swapok]")){
-    const nid=+r.querySelector("[data-swap]").value,{error}=await tc().update({class_id:nid}).eq("teacher_id",me.id).eq("class_id",id);
-    if(error)return fail(error,"لم يُحفظ التغيير");
+    const nid=+r.querySelector("[data-swap]").value;if(fullCls(nid))return toast(FULLMSG,4000);
+    const {error}=await tc().update({class_id:nid}).eq("teacher_id",me.id).eq("class_id",id);
+    if(error){if(isFull(error)){load[nid]=MAXT;renderAssign()}return fail(error,isFull(error)?FULLMSG:"لم يُحفظ التغيير")}
+    load[id]=Math.max(0,(load[id]||1)-1);load[nid]=(load[nid]||0)+1;
     assigned.find(a=>a.class_id===id).class_id=nid;if(cls===id)cls=nid;if(rcls===id)rcls=nid;
     renderAll();toast(`استُبدل ${cname(id)} بـ ${cname(nid)}`);
   }
@@ -1071,17 +1083,17 @@ $("#lf").onsubmit=async e=>{
     if(error){busy(b,false);return lerr("تعذّر حفظ بياناتكِ. حاولي مرة أخرى.")}
     const t=await db.from("teacher_classes").insert(fpick.map((id,i)=>({class_id:id,is_primary:i===0})));
     busy(b,false);
-    if(t.error) toast("حُفظ اسمكِ، لكن لم تُحفظ الصفوف. اختاريها من الإعدادات.",4000);
+    if(t.error) toast(isFull(t.error)?"حُفظ اسمكِ، لكن أحد الصفوف اكتمل بمعلمتين قبل الحفظ. اختاري صفوفكِ من الإعدادات.":"حُفظ اسمكِ، لكن لم تُحفظ الصفوف. اختاريها من الإعدادات.",5000);
     pendingProfile=data;pending=null;$("#npu").value=sessUser?.email||"";showLogin("setpin");
   }
 };
 async function loadFirstClasses(){
-  fpick=[];const {data,error}=await db.from("classes").select("id,name").order("id");
+  fpick=[];const [{data,error}]=await Promise.all([db.from("classes").select("id,name").order("id"),loadLoad()]);
   if(error||!data.length){$("#fcls").innerHTML=`<p class="muted">${error?"تعذّر تحميل الصفوف. حدّثي الصفحة وحاولي مرة أخرى.":"لا توجد صفوف بعد. ستُضاف من الإعدادات."}</p>`;return}
-  $("#fcls").innerHTML=data.map(c=>`<button type="button" class="chip" aria-pressed="false" data-id="${c.id}">${esc(c.name)}</button>`).join("");
+  $("#fcls").innerHTML=data.map(c=>fullCls(c.id)?`<button type="button" class="chip" aria-pressed="false" data-id="${c.id}" disabled title="${FULLMSG}">${esc(c.name)} · مكتمل</button>`:`<button type="button" class="chip" aria-pressed="false" data-id="${c.id}">${esc(c.name)}</button>`).join("")+(data.some(c=>fullCls(c.id))?`<p class="muted" style="width:100%;margin:4px 2px 0;font-size:12.5px">الصف المكتمل مسند لمعلمتين، ولا يُسند لأكثر من معلمتين.</p>`:"");
 }
 $("#fcls").onclick=e=>{
-  const b=e.target.closest(".chip");if(!b)return;const id=+b.dataset.id,on=b.getAttribute("aria-pressed")!=="true";
+  const b=e.target.closest(".chip");if(!b||b.disabled)return;const id=+b.dataset.id,on=b.getAttribute("aria-pressed")!=="true";
   b.setAttribute("aria-pressed",on);fpick=on?[...fpick,id]:fpick.filter(x=>x!==id);
   $$("#fcls .chip").forEach(c=>c.dataset.main=+c.dataset.id===fpick[0]);
 };
