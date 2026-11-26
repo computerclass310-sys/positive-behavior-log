@@ -245,3 +245,18 @@ returns table (class_id bigint, teachers int) language sql stable security defin
 $$;
 revoke all on function public.class_load() from public, anon;
 grant execute on function public.class_load() to authenticated;
+
+-- البريد المخوّل بمتابعة جميع الصفوف وطباعة تقريرها (يُدار من لوحة Supabase فقط)
+create table public.supervisors (
+  email text primary key check (email = lower(email)),
+  created_at timestamptz not null default now()
+);
+alter table public.supervisors enable row level security;
+revoke all on public.supervisors from anon, authenticated;
+-- insert into public.supervisors (email) values ('...');
+create or replace function public.is_supervisor()
+returns boolean language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.supervisors where email = lower(coalesce((select auth.jwt()) ->> 'email', '')))
+$$;
+revoke all on function public.is_supervisor() from public, anon;
+grant execute on function public.is_supervisor() to authenticated;
