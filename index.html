@@ -288,9 +288,12 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 #printbox .pfoot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;font:700 14px/1.9 "Tajawal",Tahoma,sans-serif}
 #printbox .pstamp{width:165px;height:auto;transform:rotate(-6deg)}
 @media print{
-  html.pp,html.pp body{background:#fff!important;height:auto;overflow:visible}
-  html.pp .stage,html.pp .toast{display:none!important}
-  html.pp #printbox{display:block;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  /* التقرير يبقى جاهزاً للطباعة طوال فتح نافذة الطباعة، حتى لو غيّرتِ المقياس أو عدد النسخ */
+  html.pp,html.pp body,html:has(#printbox .page),html:has(#printbox .page) body{background:#fff!important;height:auto;overflow:visible}
+  html.pp .stage,html.pp .toast,html:has(#printbox .page) .stage,html:has(#printbox .page) .toast{display:none!important}
+  html.pp #printbox,html:has(#printbox .page) #printbox{display:block;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  /* الآيفون والآيباد يضيفان هوامش خاصة بهما، فنصغّر الصفحة قليلاً لتبقى في ورقة A4 واحدة */
+  html.ios #printbox .page{zoom:.86}
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -727,10 +730,14 @@ function formPage(s,recs){
     <tfoot><tr><th colspan="2">المجموع</th><th colspan="${POINTS.length}">${AR(tot)} / ${AR(max())}</th><th colspan="2" style="${tot>=max()?"":"color:#c0261d"}">${status(tot)[0]}</th></tr></tfoot></table>
     <div class="pfoot"><div>المعلمة: ${esc(tname())}<br>التوقيع: ${sig?`<img class="tsig" src="${sig}" alt="توقيع المعلمة">`:"...................."}التاريخ: ${fmtDate(new Date())}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div></section>`;
 }
+const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+if(IOS)document.documentElement.classList.add("ios");
+let printing=false;
 function printDoc(html){
-  $("#printbox").innerHTML=html;document.documentElement.classList.add("pp");
-  const done=()=>{document.documentElement.classList.remove("pp");window.removeEventListener("afterprint",done)};
-  window.addEventListener("afterprint",done);window.print();setTimeout(done,1500);
+  // لا نمسح التقرير بعد الطباعة: نافذة الطباعة في الجوال تعيد رسم الصفحة كلما تغيّر المقياس
+  $("#printbox").innerHTML=html;document.documentElement.classList.add("pp");printing=true;
+  const done=()=>{printing=false;document.documentElement.classList.remove("pp");window.removeEventListener("afterprint",done)};
+  window.addEventListener("afterprint",done);window.print();
 }
 
 // ---------- المتابعة ----------
@@ -1213,7 +1220,7 @@ if(!$("#em").value) $("#em").value=ls.get("bl-last-email")||"";
 // ---------- التحديث دون إغلاق التطبيق ----------
 // يقارن بصمة ملف التطبيق على الخادم (ETag / Last-Modified) كل 5 دقائق وعند العودة إلى التطبيق
 let verTag=null,updWaiting=false;
-const editing=()=>!!($("#note")?.value.trim()||drawn||evFile||(!$("#af").hidden&&$("#nn").value.trim())||!$("#pf").hidden||(!$("#login").hidden&&["code","name","setpin"].includes(step)));
+const editing=()=>printing||!!($("#note")?.value.trim()||drawn||evFile||(!$("#af").hidden&&$("#nn").value.trim())||!$("#pf").hidden||(!$("#login").hidden&&["code","name","setpin"].includes(step)));
 async function readTag(){
   try{const r=await fetch(location.href.split("#")[0],{method:"HEAD",cache:"no-store"});if(!r.ok)return null;
     return r.headers.get("etag")||r.headers.get("last-modified")||null}catch(e){return null}
