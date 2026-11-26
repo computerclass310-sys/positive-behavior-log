@@ -260,3 +260,13 @@ returns boolean language sql stable security definer set search_path = '' as $$
 $$;
 revoke all on function public.is_supervisor() from public, anon;
 grant execute on function public.is_supervisor() to authenticated;
+-- أسماء المعلمات المسند لهن كل صف: للبريد المخوّل فقط (فارغة لغيره)
+create or replace function public.class_teachers()
+returns table (class_id bigint, full_name text) language sql stable security definer set search_path = '' as $$
+  select tc.class_id, p.full_name
+  from public.teacher_classes tc join public.profiles p on p.id = tc.teacher_id
+  where public.is_supervisor()
+  order by tc.class_id, tc.created_at
+$$;
+revoke all on function public.class_teachers() from public, anon;
+grant execute on function public.class_teachers() to authenticated;

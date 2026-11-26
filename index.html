@@ -110,6 +110,10 @@ span.chip{box-shadow:none}
 .sumt th,.sumt td{padding:9px 4px;text-align:center;border-bottom:1px solid var(--edge)}
 .sumt th{font-size:12px;color:var(--mute);font-weight:500}.sumt td:first-child,.sumt th:first-child{text-align:right}
 .sumt tfoot td{font-weight:800;border-bottom:0}.sumt .no{color:#c0261d}
+.fold>summary{list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}.fold>summary::-webkit-details-marker{display:none}
+.fold>summary h3{margin:0}.fold .fchev{margin-inline-start:auto;transition:transform .2s ease}.fold[open] .fchev{transform:rotate(180deg)}
+.fold[open]>summary h3{margin-bottom:4px}.sumt td small{display:block;font-size:11.5px;color:var(--mute);font-weight:400;line-height:1.5;margin-top:2px}
+@media (prefers-reduced-motion:reduce){.fold .fchev{transition:none}}
 .tiles3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
 .tile{border-radius:22px;padding:14px 12px;min-height:112px;display:flex;flex-direction:column;justify-content:space-between;gap:4px;border:1px solid var(--edge);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 button.tile{appearance:none;font:inherit;color:var(--ink);text-align:right;cursor:pointer;transition:transform .15s,background .2s}
@@ -400,10 +404,10 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
         <section data-v="rep" hidden>
           <h2 class="ptitle">تقارير درجات السلوك الإيجابي</h2>
           <small class="psub" id="rcls"></small>
-          <div class="card" id="allc" hidden><h3><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>متابعة جميع الصفوف<span class="badge">رصد كل المعلمات</span></h3>
-            <table class="sumt"><thead><tr><th>الصف</th><th>الطالبات</th><th>المستوفيات</th><th>غير المستوفيات</th><th>النسبة</th></tr></thead><tbody id="allb"></tbody><tfoot id="allf"></tfoot></table>
+          <details class="card fold" id="allc" hidden><summary><h3><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>متابعة جميع الصفوف<svg class="ic fchev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
+            <small style="display:block;font-size:12px;color:var(--mute);margin-top:6px">المجموع من رصد جميع المعلمات</small><table class="sumt"><thead><tr><th>الصف</th><th>الطالبات</th><th>المستوفيات</th><th>غير المستوفيات</th><th>النسبة</th></tr></thead><tbody id="allb"></tbody><tfoot id="allf"></tfoot></table>
             <button class="gbtn dark wide" id="pall" style="margin-top:14px"><svg class="ic" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2"/><rect x="6" y="14" width="12" height="7"/></svg>طباعة تقرير جميع الصفوف (PDF)</button>
-          </div>
+          </details>
           <div class="card"><h3><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>تحديد نطاق التقرير<span class="badge" id="rcount"></span></h3>
             <div class="field sel"><select id="rclSel" aria-label="صف التقرير"></select><svg class="ic chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
             <div class="tiles3" id="tiles">
@@ -521,7 +525,7 @@ const HEAD_LINES=["المملكة العربية السعودية","وزارة �
 const FMT=["pdf","excel","word"],FMTL=["PDF","Excel","Word"];
 const TITLES={rec:"الرصد",rep:"المتابعة",stu:"الطالبات",set:"الإعدادات"};
 const db=SUPABASE_URL&&SUPABASE_KEY&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
-let lastSig=null,me=null,email="",classes=[],assigned=[],load={},sup=false,allSc={},fpick=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,detRecs=[],pts=2,flt=0,editId=null,evFile=null,lastRec=null,toastT,maxT;
+let lastSig=null,me=null,email="",classes=[],assigned=[],load={},sup=false,allSc={},ctn={},fpick=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,detRecs=[],pts=2,flt=0,editId=null,evFile=null,lastRec=null,toastT,maxT;
 const prefs={needsig:true,notify:true,frost:false};
 try{Object.assign(prefs,JSON.parse(localStorage.getItem("bl-prefs")||"{}"))}catch(e){}
 const savePrefs=()=>{try{localStorage.setItem("bl-prefs",JSON.stringify(prefs))}catch(e){}};
@@ -548,7 +552,9 @@ const fullCls=id=>(load[id]||0)>=MAXT&&!assigned.some(a=>a.class_id===id);
 // متابعة جميع الصفوف: لبريد محدد في قاعدة البيانات فقط (جدول supervisors)
 async function loadSup(){
   const {data,error}=await db.rpc("is_supervisor");sup=!error&&data===true;if(!sup)return;
-  const r=await db.from("student_scores").select("student_id,total");if(!r.error)allSc=Object.fromEntries(r.data.map(x=>[x.student_id,x.total]));
+  const [r,t]=await Promise.all([db.from("student_scores").select("student_id,total"),db.rpc("class_teachers")]);
+  if(!r.error)allSc=Object.fromEntries(r.data.map(x=>[x.student_id,x.total]));
+  if(!t.error){ctn={};(t.data||[]).forEach(x=>(ctn[x.class_id]=ctn[x.class_id]||[]).push(x.full_name))}
 }
 function classSummary(){
   const m=max(),rows=classes.map(c=>{const st=students.filter(s=>s.class_id===c.id),d=st.filter(s=>(allSc[s.id]||0)>=m).length;return {c,n:st.length,d}});
@@ -557,19 +563,19 @@ function classSummary(){
 function renderSup(){
   $("#allc").hidden=!sup;if(!sup)return;
   const {rows,n,d,pct}=classSummary(),P=v=>v==null?"—":`${v}٪`;
-  $("#allb").innerHTML=rows.map(r=>`<tr><td><b>${esc(r.c.name)}</b></td><td>${r.n}</td><td>${r.d}</td><td class="${r.n-r.d?"no":""}">${r.n-r.d}</td><td>${P(pct(r.d,r.n))}</td></tr>`).join("");
+  $("#allb").innerHTML=rows.map(r=>`<tr><td><b>${esc(r.c.name)}</b><small>${(ctn[r.c.id]||[]).map(esc).join("، ")||"غير مسند"}</small></td><td>${r.n}</td><td>${r.d}</td><td class="${r.n-r.d?"no":""}">${r.n-r.d}</td><td>${P(pct(r.d,r.n))}</td></tr>`).join("");
   $("#allf").innerHTML=`<tr><td>المجموع</td><td>${n}</td><td>${d}</td><td class="${n-d?"no":""}">${n-d}</td><td>${P(pct(d,n))}</td></tr>`;
 }
 async function printAllClasses(){
   toast("جارٍ تجهيز تقرير جميع الصفوف…");await loadSup();if(!sup)return toast("هذا التقرير متاح للبريد المخوّل فقط");
   renderSup();const {rows,n,d,pct}=classSummary(),P=v=>v==null?"—":`٪${AR(v)}`;
-  const body=rows.map((r,i)=>`<tr><td>${AR(i+1)}</td><td class="nm">${esc(r.c.name)}</td><td>${AR(r.n)}</td><td>${AR(r.d)}</td><td class="${r.n-r.d?"no":""}">${AR(r.n-r.d)}</td><td>${P(pct(r.d,r.n))}</td></tr>`).join("");
+  const body=rows.map((r,i)=>`<tr><td>${AR(i+1)}</td><td class="nm">${esc(r.c.name)}</td><td class="nm">${(ctn[r.c.id]||[]).map(n=>"أ. "+esc(n)).join("<br>")||"—"}</td><td>${AR(r.n)}</td><td>${AR(r.d)}</td><td class="${r.n-r.d?"no":""}">${AR(r.n-r.d)}</td><td>${P(pct(r.d,r.n))}</td></tr>`).join("");
   printDoc(`<section class="page cp">${header()}<div class="ft">تقرير متابعة درجات السلوك الإيجابي لجميع الصفوف</div>
     <div class="cp-meta"><span>العام الدراسي: ${AR(ACAD_YEAR)}</span><span>الفصل الدراسي: ${AR(TERM)}</span><span>النصاب: ${AR(max())} درجة</span><span>تاريخ التقرير: ${fmtDate(new Date())}</span></div>
     <div class="cp-stats"><div><small>عدد الطالبات</small><b>${AR(n)}</b></div><div><small>المستوفيات</small><b>${AR(d)}</b></div><div><small>غير المستوفيات</small><b>${AR(n-d)}</b></div><div><small>نسبة الاستيفاء</small><b>${P(pct(d,n))}</b></div></div>
-    <table><colgroup><col style="width:34px"><col><col style="width:15%"><col style="width:15%"><col style="width:17%"><col style="width:15%"></colgroup>
-      <thead><tr><th>م</th><th>الصف</th><th>عدد الطالبات</th><th>المستوفيات</th><th>غير المستوفيات</th><th>نسبة الاستيفاء</th></tr></thead><tbody>${body}</tbody>
-      <tfoot><tr><th colspan="2">المجموع</th><th>${AR(n)}</th><th>${AR(d)}</th><th style="${n-d?"color:#c0261d":""}">${AR(n-d)}</th><th>${P(pct(d,n))}</th></tr></tfoot></table>
+    <table><colgroup><col style="width:30px"><col style="width:13%"><col><col style="width:12%"><col style="width:12%"><col style="width:13%"><col style="width:12%"></colgroup>
+      <thead><tr><th>م</th><th>الصف</th><th>المعلمة المسند لها الصف</th><th>عدد الطالبات</th><th>المستوفيات</th><th>غير المستوفيات</th><th>نسبة الاستيفاء</th></tr></thead><tbody>${body}</tbody>
+      <tfoot><tr><th colspan="3">المجموع</th><th>${AR(n)}</th><th>${AR(d)}</th><th style="${n-d?"color:#c0261d":""}">${AR(n-d)}</th><th>${P(pct(d,n))}</th></tr></tfoot></table>
     <div class="cp-sign" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><b>الموجهة الطلابية</b>الاسم: ....................<br>التوقيع: ....................</div>
       <div><b>قائدة المدرسة</b>الاسم: ....................<br>التوقيع: ....................<br>الاعتماد: ☐ معتمد</div></div>
     <div class="cp-end"><span>المجموع من رصد جميع المعلمات</span><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div></section>`);
@@ -1152,7 +1158,7 @@ function showPin(em){$("#pinu").value=em;$("#pinhi").textContent=em;showLogin("p
   $("#pinchg").hidden=pinMode==="confirm"}
 async function fullSignOut(msg){
   const em=sessUser?.email||$("#em").value||ls.get("bl-last-email")||"";
-  await db?.auth.signOut();pinMode="login";sessUser=null;me=null;students=[];scores={};assigned=[];sup=false;allSc={};$("#allc").hidden=true;lastRec=null;pendingProfile=null;
+  await db?.auth.signOut();pinMode="login";sessUser=null;me=null;students=[];scores={};assigned=[];sup=false;allSc={};ctn={};$("#allc").open=false;$("#allc").hidden=true;lastRec=null;pendingProfile=null;
   $("#em").value=em;showLogin("email");if(msg)lerr(msg);
 }
 async function openApp(profile,user){
