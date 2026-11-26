@@ -405,8 +405,8 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
             </form>
           </div>
           <div class="card" id="pincard"><h3><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>الدخول السريع</h3>
-            <p style="font-size:13px;color:var(--mute);line-height:1.7">تدخلين على هذا الجهاز برمز من 4 أرقام بدل رمز البريد. زر «خروج» يقفل التطبيق فقط.</p>
-            <div class="grid2" style="margin-top:14px"><button type="button" class="gbtn" id="chpin">تغيير الرمز السريع</button><button type="button" class="gbtn danger" id="signout">الخروج نهائياً من هذا الجهاز</button></div>
+            <p style="font-size:13px;color:var(--mute);line-height:1.7">تدخلين على هذا الجهاز برمز من 4 أرقام بدل رمز البريد.</p>
+            <button type="button" class="gbtn" id="chpin" style="width:100%;margin-top:14px">تغيير الرمز السريع</button>
           </div>
           <div class="card"><h3><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg>إعدادات نظام الرصد والسلوك</h3>
             <div class="set boxed"><div>الحد الأقصى الافتراضي للنقاط<small>النصاب الفصلي المعتمد للطالبة</small></div><div class="step"><button type="button" class="gbtn icon" id="mn" aria-label="إنقاص">−</button><b id="mx">20</b><button type="button" class="gbtn icon" id="pl" aria-label="زيادة">+</button></div></div>
@@ -978,11 +978,6 @@ $("#forgot").onclick=()=>fullSignOut("أرسلي رمزاً إلى بريدكِ�
 $("#pin").oninput=e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4);if(e.target.value.length===4)$("#lf").requestSubmit()};
 ["#np1","#np2"].forEach(k=>$(k).oninput=e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4)});
 $("#chpin").onclick=()=>{pendingProfile=me;$("#npu").value=sessUser?.email||email;showLogin("setpin")};
-$("#signout").onclick=e=>{
-  const b=e.currentTarget;
-  if(b.dataset.armed!=="1"){b.dataset.armed="1";toast("اضغطي مرة أخرى للخروج نهائياً. ستحتاجين رمز البريد في الدخول القادم.",3500);setTimeout(()=>delete b.dataset.armed,3500);return}
-  fullSignOut();
-};
 $("#pincard").hidden=!canPin;
 
 if(!$("#em").value) $("#em").value=ls.get("bl-last-email")||"";
