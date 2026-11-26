@@ -177,3 +177,35 @@ alter table public.students alter column created_by drop not null;
 alter table public.students drop constraint students_created_by_fkey;
 alter table public.students add constraint students_created_by_fkey
   foreign key (created_by) references public.profiles (id) on delete set null;
+
+-- ===== نسخة احتياطية يومية (آخر 30 يوماً) داخل مخطط backups غير المكشوف =====
+create extension if not exists pg_cron;
+create schema if not exists backups;
+revoke all on schema backups from public, anon, authenticated;
+create table backups.snapshots (
+  id bigint generated always as identity primary key,
+  taken_at timestamptz not null default now(),
+  data jsonb not null
+);
+revoke all on backups.snapshots from public, anon, authenticated;
+-- التواقيع (صور) لا تُنسخ لتوفير المساحة؛ رموز الدخول لا تُنسخ أبداً
+create or replace function backups.take_snapshot() returns bigint
+language plpgsql set search_path = '' as $$
+declare new_id bigint;
+begin
+  insert into backups.snapshots (data)
+  select jsonb_build_object(
+    'teachers', coalesce((select jsonb_agg(jsonb_build_object('id', p.id, 'email', u.email, 'full_name', p.full_name, 'subject', p.subject,
+                  'max_points', p.max_points, 'created_at', p.created_at) order by p.full_name)
+                from public.profiles p left join auth.users u on u.id = p.id), '[]'),
+    'classes', coalesce((select jsonb_agg(to_jsonb(c) order by c.id) from public.classes c), '[]'),
+    'teacher_classes', coalesce((select jsonb_agg(to_jsonb(t)) from public.teacher_classes t), '[]'),
+    'students', coalesce((select jsonb_agg(to_jsonb(s) order by s.id) from public.students s), '[]'),
+    'behavior_records', coalesce((select jsonb_agg(to_jsonb(r) - 'signature' order by r.id) from public.behavior_records r), '[]')
+  ) returning id into new_id;
+  delete from backups.snapshots where taken_at < now() - interval '30 days';
+  return new_id;
+end $$;
+revoke all on function backups.take_snapshot() from public, anon, authenticated;
+-- كل يوم الساعة 11 مساءً بتوقيت الرياض (20:00 UTC)
+select cron.schedule('daily-backup', '0 20 * * *', $$select backups.take_snapshot()$$);
