@@ -221,6 +221,8 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 #printbox .ac li{display:flex;align-items:center;gap:4mm;padding:1.1mm 0;position:relative}
 #printbox .ac-dot{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #5f614f;flex:none;z-index:1}
 #printbox .ac-tx{flex:1}#printbox .ac-tx b{font-weight:700}#printbox .ac-tx small{display:block;font-size:11px;color:#5b5853}
+#printbox .ac-sig{width:26mm;height:9mm;object-fit:contain;object-position:center;flex:none}
+#printbox .ac-nosig{display:inline-block;border-bottom:1px dotted #bbb}
 #printbox .ac-chip{background:#5f614f!important;color:#fff;border-radius:99px;padding:2px 12px;font-weight:700;font-size:13px}
 #printbox .ac-more{font-size:12px;color:#5b5853;margin:1mm 22px 0}
 #printbox .ac-ft{margin-top:auto;display:grid;grid-template-columns:1fr auto;gap:8mm;align-items:end;border-top:1px solid #e6dfd9;padding-top:4mm;font-size:12px;line-height:1.9}
@@ -720,7 +722,7 @@ function achPage(s,recs){
   const m=max(),tot=recs.reduce((a,r)=>a+r.points,0),pct=Math.min(tot/m,1),R=62,C=2*Math.PI*R;
   const ring=`<svg viewBox="0 0 160 160" class="ac-ring" aria-hidden="true"><circle cx="80" cy="80" r="${R}" fill="none" stroke="#ece6e1" stroke-width="16"/>${tot?`<circle cx="80" cy="80" r="${R}" fill="none" stroke="#5f614f" stroke-width="16" stroke-linecap="round" stroke-dasharray="${(C*pct).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 80 80)"/>`:""}</svg>`;
   const MAXL=14,shown=recs.slice(-MAXL);
-  const items=shown.map(r=>`<li><span class="ac-dot"></span><div class="ac-tx"><b>${esc(r.description)}</b><small>${fmtDate(r.created_at)} · رصدتها: أ. ${esc(r.profiles?.full_name||me?.full_name||"")}</small></div><span class="ac-chip">+${AR(r.points)}</span></li>`).join("");
+  const items=shown.map(r=>`<li><span class="ac-dot"></span><div class="ac-tx"><b>${esc(r.description)}</b><small>${fmtDate(r.created_at)} · رصدتها: أ. ${esc(r.profiles?.full_name||me?.full_name||"")}</small></div>${r.signature?`<img class="ac-sig" src="${r.signature}" alt="توقيع المعلمة">`:`<span class="ac-sig ac-nosig"></span>`}<span class="ac-chip">+${AR(r.points)}</span></li>`).join("");
   const more=recs.length>MAXL?`<p class="ac-more">و${AR(recs.length-MAXL)} سلوكيات أخرى مرصودة سابقاً.</p>`:"";
   const sig=[...recs].reverse().find(r=>r.signature&&(!r.teacher_id||r.teacher_id===me?.id))?.signature||lastSig;
   return `<section class="page ac">${header()}
