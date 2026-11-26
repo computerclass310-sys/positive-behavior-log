@@ -109,7 +109,7 @@ span.chip{box-shadow:none}
 .sumt{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:12px}
 .sumt th,.sumt td{padding:9px 4px;text-align:center;border-bottom:1px solid var(--edge)}
 .sumt th{font-size:12px;color:var(--mute);font-weight:500}.sumt td:first-child,.sumt th:first-child{text-align:right}
-.sumt tfoot td{font-weight:800;border-bottom:0}.sumt .no{color:#c0261d}
+.sumt tfoot td{font-weight:800;border-bottom:0}.sumt td:first-child{white-space:nowrap;padding-left:8px}.sumt td.tn{text-align:right;font-size:12.5px;line-height:1.6}.sumt td.tn .none{color:var(--mute)}.sumt th:nth-child(2){text-align:right}.sumt .no{color:#c0261d}
 .fold>summary{list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}.fold>summary::-webkit-details-marker{display:none}
 .fold>summary h3{margin:0}.fold .fchev{margin-inline-start:auto;transition:transform .2s ease}.fold[open] .fchev{transform:rotate(180deg)}
 .fold[open]>summary h3{margin-bottom:4px}.fold .na{font-size:13px;font-weight:500;color:#8a8a8a}
@@ -417,7 +417,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
           <h2 class="ptitle">تقارير درجات السلوك الإيجابي</h2>
           <small class="psub" id="rcls"></small>
           <details class="card fold" id="allc" hidden><summary><h3><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>متابعة جميع الصفوف<span class="na" id="allna">(غير متاح)</span><svg class="ic fchev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
-            <small style="display:block;font-size:12px;color:var(--mute);margin-top:6px">المجموع من رصد جميع المعلمات</small><table class="sumt"><thead><tr><th>الصف</th><th>الطالبات</th><th>المستوفيات</th><th>غير المستوفيات</th><th>النسبة</th></tr></thead><tbody id="allb"></tbody><tfoot id="allf"></tfoot></table>
+            <small style="display:block;font-size:12px;color:var(--mute);margin-top:6px">المجموع من رصد جميع المعلمات</small><table class="sumt"><thead><tr><th>الصف</th><th>المعلمة</th><th>الطالبات</th><th>المستوفيات</th><th>غير المستوفيات</th></tr></thead><tbody id="allb"></tbody><tfoot id="allf"></tfoot></table>
             <button class="gbtn dark wide" id="pall" style="margin-top:14px"><svg class="ic" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2"/><rect x="6" y="14" width="12" height="7"/></svg>طباعة تقرير جميع الصفوف (PDF)</button>
           </details>
           <div class="card"><h3><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>متابعة الصف المسند للمعلمة<span class="badge" id="rcount"></span></h3>
@@ -576,9 +576,9 @@ function renderSup(){
   // تظهر البطاقة لكل المعلمات، ولا تُفتح إلا للبريد المخوّل
   const c=$("#allc");c.hidden=false;c.classList.toggle("locked",!sup);$("#allna").hidden=sup;
   if(!sup){c.open=false;$("#allb").innerHTML=$("#allf").innerHTML="";return}
-  const {rows,n,d,pct}=classSummary(),P=v=>v==null?"—":`${v}٪`;
-  $("#allb").innerHTML=rows.map(r=>`<tr><td><b>${esc(r.c.name)}</b><small>${(ctn[r.c.id]||[]).map(esc).join("، ")||"غير مسند"}</small></td><td>${r.n}</td><td>${r.d}</td><td class="${r.n-r.d?"no":""}">${r.n-r.d}</td><td>${P(pct(r.d,r.n))}</td></tr>`).join("");
-  $("#allf").innerHTML=`<tr><td>المجموع</td><td>${n}</td><td>${d}</td><td class="${n-d?"no":""}">${n-d}</td><td>${P(pct(d,n))}</td></tr>`;
+  const {rows,n,d}=classSummary();
+  $("#allb").innerHTML=rows.map(r=>`<tr><td><b>${esc(r.c.name)}</b></td><td class="tn">${(ctn[r.c.id]||[]).map(esc).join("<br>")||`<span class="none">غير مسند</span>`}</td><td>${r.n}</td><td>${r.d}</td><td class="${r.n-r.d?"no":""}">${r.n-r.d}</td></tr>`).join("");
+  $("#allf").innerHTML=`<tr><td colspan="2">المجموع</td><td>${n}</td><td>${d}</td><td class="${n-d?"no":""}">${n-d}</td></tr>`;
 }
 async function printAllClasses(){
   toast("جارٍ تجهيز تقرير جميع الصفوف…");await loadSup();if(!sup)return toast("هذا التقرير متاح للبريد المخوّل فقط");
