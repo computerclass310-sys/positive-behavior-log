@@ -122,9 +122,9 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .ibox.dark{background:#1f1f1f;color:#fff;border-color:#1f1f1f}
 .total{padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.6);border:1px solid var(--edge);text-align:center;flex:none}
 .total small{display:block;font-size:11px;color:var(--mute)}.total b{font-size:22px;font-weight:700}
-.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 16px}
-.kv div{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.4);border:1px solid var(--edge)}
-.kv small{display:block;font-size:12px;color:var(--mute)}.kv b{font-size:14px;font-weight:600}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 16px}
+.kv div{padding:12px 8px;min-height:72px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-align:center;border-radius:16px;background:rgba(255,255,255,.45);border:1px solid var(--edge)}
+.kv small{display:block;font-size:12px;color:var(--mute)}.kv b{font-size:16px;font-weight:700;white-space:nowrap}
 .subh{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;margin:6px 0 10px}
 .ev{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:18px;background:rgba(255,255,255,.45);border:1px solid var(--edge);margin-bottom:8px}
 .ev div{flex:1}.ev b{font-weight:600;font-size:14px;display:block}.ev small{display:block;font-size:12px;color:var(--mute)}
@@ -632,8 +632,8 @@ async function detail(){
   if(det==null){box.innerHTML=`<p class="muted">اختاري طالبة من القائمة لعرض تقريرها.</p>`;return}
   const id=det,s=students.find(x=>x.id===id),[g,sec]=cparts(s.class_id);
   box.innerHTML=`<div class="doc"><div><small>المملكة العربية السعودية</small><small>${esc(school()||"أضيفي اسم المدرسة من الإعدادات")}</small><b>سجل درجات السلوك الإيجابي</b></div><span class="ibox">${I.bank}</span></div>
-    <div class="stu"><div><b style="font-size:17px">${esc(s.full_name)}</b><small>${esc(cname(s.class_id))}</small></div><div class="total"><small>المجموع النهائي</small><b>${sc(id)}</b> <small style="display:inline">/ ${max()} درجة</small></div></div>
-    <div class="kv"><div><small>الصف الدراسي</small><b>${esc(g)}</b></div><div><small>الفصل</small><b>${esc(sec)}</b></div></div>
+    <div class="stu"><div><b style="font-size:17px">${esc(s.full_name)}</b><small>${esc(cname(s.class_id))}</small></div></div>
+    <div class="kv"><div><small>المجموع النهائي</small><b>${sc(id)} / ${max()}</b></div><div><small>الصف الدراسي</small><b>${esc(g)}</b></div><div><small>الفصل</small><b>${esc(sec)}</b></div></div>
     <div class="subh">تفاصيل الفرص والمشاركات المرصودة<span class="badge" id="evc">…</span></div>
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
     <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><img class="stampimg" src="${STAMP}" alt="ختم المدرسة"></div>
