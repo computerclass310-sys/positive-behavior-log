@@ -161,6 +161,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .help{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.35)}
 .help b{display:block;font-size:15px;font-weight:600;margin-bottom:4px}.help p{font-size:13px;color:var(--mute);line-height:1.7}
 .foot{text-align:center;font-size:12px;color:var(--mute);line-height:1.8;margin-top:6px}
+.pinuser{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
 .pinin{letter-spacing:.7em;font-size:26px!important;font-weight:700;text-align:center}
 .pinnote{display:flex;gap:10px;align-items:flex-start;margin:12px 0 0;padding:12px 14px;border-radius:16px;background:rgba(143,145,124,.18);border:1px solid var(--edge);font-size:13px;line-height:1.7}
 .pinnote b{font-weight:700}
@@ -242,16 +243,19 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
           <div class="field"><input id="fsub" placeholder="مثال: الرياضيات"></div></div>
         <div data-step="pin" hidden><p id="pinhi" style="font-size:17px;font-weight:700;margin:8px 4px 0"></p>
           <p style="font-size:13px;color:var(--mute);margin:2px 4px 0">ادخلي برمزكِ السريع المكوّن من 4 أرقام.</p>
+          <input class="pinuser" id="pinu" type="email" autocomplete="username" readonly tabindex="-1" aria-label="البريد المرتبط بالرمز" dir="ltr">
           <label class="l" for="pin">رمز الدخول السريع</label>
-          <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="pin" class="pinin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" dir="ltr" placeholder="••••"></div>
+          <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="pin" class="pinin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" dir="ltr" placeholder="••••"></div>
           <div style="text-align:center;margin-top:12px"><button type="button" class="linkbtn" id="forgot">نسيتِ الرمز؟ الدخول برمز يصل إلى البريد</button></div></div>
         <div data-step="setpin" hidden><p style="font-size:16px;font-weight:700;margin:8px 4px 0">اختاري رمز الدخول السريع</p>
           <p style="font-size:13px;color:var(--mute);line-height:1.7;margin:2px 4px 0">رمز من 4 أرقام تختارينه أنتِ، لتدخلي به إلى التطبيق على هذا الجهاز.</p>
+          <input class="pinuser" id="npu" type="email" autocomplete="username" readonly tabindex="-1" aria-label="البريد المرتبط بالرمز" dir="ltr">
           <label class="l" for="np1">الرمز السريع</label>
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="np1" class="pinin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" dir="ltr" placeholder="••••"></div>
           <label class="l" for="np2">تأكيد الرمز</label>
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="np2" class="pinin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" dir="ltr" placeholder="••••"></div>
-          <div class="pinnote"><span>💡</span><span><b>في المرة القادمة على هذا الجهاز ستدخلين بالرمز السريع فقط</b>، دون رمز البريد. وإن فتحتِ التطبيق من جهاز آخر، فسيصلكِ رمز على البريد مرة واحدة ثم تختارين رمزاً سريعاً لذلك الجهاز.</span></div></div>
+          <div class="pinnote"><span>💡</span><span><b>في المرة القادمة على هذا الجهاز ستدخلين بالرمز السريع فقط</b>، دون رمز البريد. وإن فتحتِ التطبيق من جهاز آخر، فسيصلكِ رمز على البريد مرة واحدة ثم تختارين رمزاً سريعاً لذلك الجهاز.</span></div>
+          <div class="pinnote" style="background:rgba(186,200,224,.3)"><span>🔐</span><span>إذا سألكِ جوالكِ <b>«حفظ كلمة المرور؟»</b> بعد الحفظ، فاختاري <b>حفظ</b>، ليقترح الرمز عليكِ في المرة القادمة بالبصمة أو بصمة الوجه.</span></div></div>
         <p class="err" id="lerr" role="alert" hidden></p>
         <div style="height:16px"></div>
         <button class="gbtn dark wide" id="lbtn"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span id="lbtnt">إرسال رمز التحقق</span></button>
@@ -859,6 +863,7 @@ $("#lf").onsubmit=async e=>{
     if(weakPin(p1)) return lerr("اختاري رمزاً أصعب، لا أرقاماً متكررة مثل 1111 ولا متتالية مثل 1234.");
     if(p1!==p2) return lerr("الرمزان غير متطابقين. أعيدي كتابة التأكيد.");
     busy(b,true);const saved=await savePin(sessUser,pendingProfile.full_name,p1);busy(b,false);
+    try{if(window.PasswordCredential&&navigator.credentials)await navigator.credentials.store(new PasswordCredential({id:sessUser.email,password:p1,name:`سجل السلوك · ${pendingProfile.full_name}`}))}catch(e){}
     $("#np1").value=$("#np2").value="";
     const prof=pendingProfile;pendingProfile=null;
     await openApp(prof,sessUser);
@@ -873,7 +878,7 @@ $("#lf").onsubmit=async e=>{
     const t=await db.from("teacher_classes").insert(fpick.map((id,i)=>({class_id:id,is_primary:i===0})));
     busy(b,false);
     if(t.error) toast("حُفظ اسمكِ، لكن لم تُحفظ الصفوف. اختاريها من الإعدادات.",4000);
-    if(canPin){pendingProfile=data;pending=null;return showLogin("setpin")}
+    if(canPin){pendingProfile=data;pending=null;$("#npu").value=sessUser?.email||"";return showLogin("setpin")}
     openApp(data,pending);
   }
 };
@@ -893,11 +898,11 @@ async function enter(user){
   const {data,error}=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();
   if(error){showLogin("email");return lerr(authMsg(error))}
   if(!data){pending=user;showLogin("name");loadFirstClasses();return}
-  if(canPin&&!pinRec(user.id)){pendingProfile=data;return showLogin("setpin")}
+  if(canPin&&!pinRec(user.id)){pendingProfile=data;$("#npu").value=user.email||"";return showLogin("setpin")}
   openApp(data,user);
 }
 function showUnlock(){
-  const rec=pinRec(sessUser.id);$("#pinhi").textContent=`مرحباً، أ. ${rec?.name||""}`;showLogin("pin");
+  const rec=pinRec(sessUser.id);$("#pinu").value=rec?.email||sessUser.email||"";$("#pinhi").textContent=`مرحباً، أ. ${rec?.name||""}`;showLogin("pin");
 }
 async function fullSignOut(msg){
   const em=sessUser?.email||pinRec(sessUser?.id)?.email||"";
@@ -924,7 +929,7 @@ document.addEventListener("click",async e=>{
 $("#forgot").onclick=()=>fullSignOut("أرسلي رمزاً إلى بريدكِ، ثم اختاري رمزاً سريعاً جديداً.");
 $("#pin").oninput=e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4);if(e.target.value.length===4)$("#lf").requestSubmit()};
 ["#np1","#np2"].forEach(k=>$(k).oninput=e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4)});
-$("#chpin").onclick=()=>{pendingProfile=me;showLogin("setpin")};
+$("#chpin").onclick=()=>{pendingProfile=me;$("#npu").value=sessUser?.email||email;showLogin("setpin")};
 $("#signout").onclick=e=>{
   const b=e.currentTarget;
   if(b.dataset.armed!=="1"){b.dataset.armed="1";toast("اضغطي مرة أخرى للخروج نهائياً. ستحتاجين رمز البريد في الدخول القادم.",3500);setTimeout(()=>delete b.dataset.armed,3500);return}
