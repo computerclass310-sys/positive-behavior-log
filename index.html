@@ -1100,7 +1100,9 @@ if(!$("#em").value) $("#em").value=ls.get("bl-last-email")||"";
   if(!db) return lerr("تعذّر تحميل مكتبة الاتصال بقاعدة البيانات. تحققي من الإنترنت وحدّثي الصفحة.");
   const {data:{session}}=await db.auth.getSession();
   if(!session) return;
-  enter(session.user);
+  const {data:u,error}=await db.auth.getUser();
+  if(error||!u?.user){await db.auth.signOut();return}
+  enter(u.user);
 })();
 }
 </script>

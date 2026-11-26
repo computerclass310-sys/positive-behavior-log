@@ -171,3 +171,9 @@ create table public.teacher_pins (
 );
 alter table public.teacher_pins enable row level security;
 revoke all on public.teacher_pins from anon, authenticated;
+
+-- عند حذف حساب معلمة تبقى الطالبات اللاتي أضافتهن (بلا مالكة) بدل منع الحذف
+alter table public.students alter column created_by drop not null;
+alter table public.students drop constraint students_created_by_fkey;
+alter table public.students add constraint students_created_by_fkey
+  foreign key (created_by) references public.profiles (id) on delete set null;
