@@ -157,3 +157,17 @@ alter table public.students drop column national_id;
 alter table public.behavior_records drop constraint behavior_records_points_check;
 alter table public.behavior_records add constraint behavior_records_points_check
   check (points in (1, 2, 3, 4, 5, 6));
+
+-- الرمز السريع لكل معلمة: مشفّر (PBKDF2)، لا يصل إليه المتصفح؛ تقرؤه وظيفة الخادم quick-pin فقط
+-- (supabase/functions/quick-pin/index.ts، منشورة مع verify_jwt=false لأنها تتحقق بنفسها)
+create table public.teacher_pins (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  email text not null unique check (email = lower(email)),
+  salt text not null,
+  pin_hash text not null,
+  failed smallint not null default 0,
+  locked boolean not null default false,
+  updated_at timestamptz not null default now()
+);
+alter table public.teacher_pins enable row level security;
+revoke all on public.teacher_pins from anon, authenticated;
