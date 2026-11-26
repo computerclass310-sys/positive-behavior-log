@@ -186,12 +186,12 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 @media(max-width:900px){.cap{display:none}}
 @media(max-width:500px){.stage{padding:0;height:100%}.phone{width:100%;height:100svh;border-radius:0;box-shadow:none}.status{display:none}.login{padding-top:28px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}.gbtn:hover,.gbtn:active,button.chip:hover,button.chip:active,button.tile:hover,button.tile:active,.importcard:hover,.importcard:active,.tab:active{transform:none!important}}
-@page{size:A4 portrait;margin:12mm 13mm}
+@page{size:A4 portrait;margin:0}
 @media print{
   html.pp,html.pp body{background:#fff!important;height:auto;overflow:visible}
   html.pp .stage,html.pp .toast{display:none!important}
   html.pp #printbox{display:block;color:#000;background:#fff;font:14px/1.6 "Traditional Arabic","Amiri","Times New Roman",Tahoma,serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  #printbox .page{break-after:page;page-break-after:always}
+  #printbox .page{box-sizing:border-box;width:210mm;padding:13mm 16mm 10mm;break-after:page;page-break-after:always;overflow:hidden}
   #printbox .page:last-child{break-after:auto;page-break-after:auto}
   #printbox .hd{display:flex;justify-content:space-between;align-items:center;gap:20px}
   #printbox .hdt{text-align:center;font:700 13px/1.55 Tahoma,Arial,sans-serif}
@@ -205,7 +205,8 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
   #printbox th{background:#e7e7e7!important;font-weight:700}
   #printbox td.dt{text-align:right}
   #printbox .m{width:34px}#printbox .pc{width:40px}#printbox .tn{width:22%}#printbox .sg{width:17%}
-  #printbox td.sg img{max-height:28px;max-width:100%}
+  #printbox td.sg img{max-height:38px;max-width:100%}
+  #printbox .tsig{display:block;max-height:55px;max-width:180px;margin:2px 0}
   #printbox tfoot th{height:34px}
   #printbox .pfoot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;font:700 14px/1.9 Tahoma,Arial,sans-serif}
   #printbox .pstamp{width:165px;height:auto;transform:rotate(-6deg)}
@@ -458,7 +459,7 @@ const HEAD_LINES=["المملكة العربية السعودية","وزارة �
 const FMT=["pdf","excel","word"],FMTL=["PDF","Excel","Word"];
 const TITLES={rec:"الرصد",rep:"المتابعة",stu:"الطالبات",set:"الإعدادات"};
 const db=SUPABASE_URL&&SUPABASE_KEY&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
-let me=null,email="",classes=[],assigned=[],fpick=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,detRecs=[],pts=2,flt=0,editId=null,evFile=null,lastRec=null,toastT,maxT;
+let lastSig=null,me=null,email="",classes=[],assigned=[],fpick=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,detRecs=[],pts=2,flt=0,editId=null,evFile=null,lastRec=null,toastT,maxT;
 const prefs={needsig:true,notify:true,frost:false};
 try{Object.assign(prefs,JSON.parse(localStorage.getItem("bl-prefs")||"{}"))}catch(e){}
 const savePrefs=()=>{try{localStorage.setItem("bl-prefs",JSON.stringify(prefs))}catch(e){}};
@@ -571,7 +572,7 @@ $("#save").onclick=async()=>{
     const up=await db.storage.from("evidence").upload(path,evFile,{contentType:evFile.type});
     if(up.error){busy(b,false);return fail(up.error,"تعذّر رفع المرفق، حاولي مرة أخرى أو احفظي دون مرفق")}
   }
-  const sig=drawn?c.toDataURL("image/png"):null,before=sc(sel);
+  const sig=drawn?c.toDataURL("image/png"):null,before=sc(sel);if(sig)lastSig=sig;
   const {data,error}=await db.from("behavior_records").insert({student_id:sel,description:d,points:pts,signature:sig,attachment_path:path}).select("id,created_at").single();
   busy(b,false);
   if(error) return fail(error,"لم يُحفظ الرصد، تحققي من الاتصال وحاولي مرة أخرى");
@@ -589,7 +590,7 @@ const header=()=>`<div class="hd"><div class="hdt">${HEAD_LINES.map(l=>`<div>${l
 function formPage(s,recs){
   const ROWS=14,rows=recs.map((r,i)=>`<tr><td>${AR(i+1)}</td><td class="dt">${esc(r.description)}</td>${POINTS.map(v=>`<td>${r.points===v?"✓":""}</td>`).join("")}<td>${r.profiles?.full_name?"أ. "+esc(r.profiles.full_name):""}</td><td class="sg">${r.signature?`<img src="${r.signature}" alt="توقيع">`:""}</td></tr>`);
   for(let i=rows.length;i<Math.max(ROWS,recs.length);i++) rows.push(`<tr><td>${AR(i+1)}</td><td></td>${POINTS.map(()=>"<td></td>").join("")}<td></td><td></td></tr>`);
-  const tot=recs.reduce((a,r)=>a+r.points,0);
+  const tot=recs.reduce((a,r)=>a+r.points,0),sig=[...recs].reverse().find(r=>r.signature)?.signature||lastSig;
   return `<section class="page">${header()}<div class="ft">نموذج رصد درجات السلوك الإيجابي</div>
     <div class="who"><span>اسم الطالبة : <b>${esc(s.full_name)}</b></span><span>الصف : <b>${esc(cname(s.class_id))}</b></span></div>
     <table><colgroup><col class="m"><col><col span="${POINTS.length}" class="pc"><col class="tn"><col class="sg"></colgroup>
@@ -597,7 +598,7 @@ function formPage(s,recs){
     <tr>${POINTS.map(v=>`<th>${AR(v)}</th>`).join("")}</tr></thead>
     <tbody>${rows.join("")}</tbody>
     <tfoot><tr><th colspan="2">المجموع</th><th colspan="${POINTS.length}">${AR(tot)} / ${AR(max())}</th><th colspan="2">${status(tot)[0]}</th></tr></tfoot></table>
-    <div class="pfoot"><div>المعلمة: ${esc(tname())}<br>التاريخ: ${fmtDate(new Date())}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div></section>`;
+    <div class="pfoot"><div>المعلمة: ${esc(tname())}<br>التوقيع: ${sig?`<img class="tsig" src="${sig}" alt="توقيع المعلمة">`:"...................."}التاريخ: ${fmtDate(new Date())}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div></section>`;
 }
 function printDoc(html){
   $("#printbox").innerHTML=html;document.documentElement.classList.add("pp");
