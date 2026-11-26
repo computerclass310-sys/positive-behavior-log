@@ -209,3 +209,15 @@ end $$;
 revoke all on function backups.take_snapshot() from public, anon, authenticated;
 -- كل يوم الساعة 11 مساءً بتوقيت الرياض (20:00 UTC)
 select cron.schedule('daily-backup', '0 20 * * *', $$select backups.take_snapshot()$$);
+
+-- Trusted devices for quick sign-in: a new device needs the email code once, then the existing quick code.
+-- Only the quick-pin Edge Function (service role) reads and writes this table.
+create table public.teacher_devices (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  device_hash text not null,
+  created_at timestamptz not null default now(),
+  last_used timestamptz not null default now(),
+  primary key (user_id, device_hash)
+);
+alter table public.teacher_devices enable row level security;
+revoke all on public.teacher_devices from anon, authenticated;

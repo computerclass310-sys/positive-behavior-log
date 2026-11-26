@@ -310,7 +310,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
           <label class="l" for="fsub">المادة <small>اختياري</small></label>
           <div class="field"><input id="fsub" placeholder="مثال: الرياضيات"></div></div>
         <div data-step="pin" hidden><p id="pinhi" dir="ltr" style="font-size:16px;font-weight:700;margin:8px 4px 0;text-align:right"></p>
-          <p style="font-size:13px;color:var(--mute);margin:2px 4px 0">ادخلي برمزكِ السريع المكوّن من 4 أرقام. <button type="button" class="linkbtn" id="pinchg">بريد آخر؟</button></p>
+          <p style="font-size:13px;color:var(--mute);margin:2px 4px 0"><span id="pinnote">ادخلي برمزكِ السريع المكوّن من 4 أرقام.</span> <button type="button" class="linkbtn" id="pinchg">بريد آخر؟</button></p>
           <input class="pinuser" id="pinu" type="email" autocomplete="username" readonly tabindex="-1" aria-label="البريد المرتبط بالرمز" dir="ltr">
           <label class="l" for="pin">رمز الدخول السريع</label>
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="pin" class="pinin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" dir="ltr" placeholder="••••"></div>
@@ -323,7 +323,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="np1" class="pinin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" dir="ltr" placeholder="••••"></div>
           <label class="l" for="np2">تأكيد الرمز</label>
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="np2" class="pinin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" dir="ltr" placeholder="••••"></div>
-          <div class="pinnote"><span>💡</span><span><b>في المرة القادمة ادخلي ببريدكِ ثم رمزكِ السريع فقط</b>، من هذا الجهاز أو أي جهاز آخر، دون انتظار رسالة البريد.</span></div>
+          <div class="pinnote"><span>💡</span><span><b>في المرة القادمة على هذا الجهاز ادخلي ببريدكِ ثم رمزكِ السريع فقط.</b> وعلى أي جهاز جديد: رمز البريد مرة واحدة، ثم رمزكِ السريع نفسه.</span></div>
           <div class="pinnote" style="background:rgba(186,200,224,.3)"><span>🔐</span><span>إذا سألكِ جوالكِ <b>«حفظ كلمة المرور؟»</b> بعد الحفظ، فاختاري <b>حفظ</b>، ليُحفظ بريدكِ والرمز معاً، ويُملآن تلقائياً في المرة القادمة دون أن تكتبيهما.</span></div></div>
         <p class="err" id="lerr" role="alert" hidden></p>
         <div style="height:16px"></div>
@@ -472,7 +472,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
             <div class="set" style="display:block"><div style="margin-bottom:10px">صيغة التقارير الافتراضية للتصدير</div><div class="chips" id="fmt"></div></div>
           </div>
           <div class="card" id="pincard"><h3><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>الدخول السريع</h3>
-            <p style="font-size:13px;color:var(--mute);line-height:1.7">تدخلين من أي جهاز ببريدكِ ورمز من 4 أرقام بدل رمز البريد. بعد 5 محاولات خاطئة يُقفل الرمز ويُطلب رمز البريد.</p>
+            <p style="font-size:13px;color:var(--mute);line-height:1.7">رمز واحد من 4 أرقام لكل أجهزتكِ. على الجهاز الجديد يُطلب رمز البريد مرة واحدة ثم رمزكِ السريع. بعد 5 محاولات خاطئة يُقفل الرمز ويُطلب رمز البريد واختيار رمز جديد.</p>
             <button type="button" class="gbtn" id="chpin" style="width:100%;margin-top:14px">تغيير الرمز السريع</button>
           </div>
           <div class="card"><h3><svg class="ic" viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18c1 0 1.5-.8 1.5-1.5 0-1.2-1-1.5-1-2.5s.8-1.5 2-1.5H17a4 4 0 004-4c0-4.4-4-8.5-9-8.5z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></svg>التفضيلات والمظهر</h3>
@@ -957,13 +957,14 @@ const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:
 const weakPin=p=>/^(\d)\1{3}$/.test(p)||"0123456789".includes(p)||"9876543210".includes(p);
 async function qp(body){
   try{
-    const {data,error}=await db.functions.invoke("quick-pin",{body});
+    const {data,error}=await db.functions.invoke("quick-pin",{body:{...body,device:DEVICE}});
     if(!error) return data||{};
     let j={};try{j=await error.context.json()}catch(e){}
     return {error:j.error||"network",remaining:j.remaining};
   }catch(e){return {error:"network"}}
 }
-let sessUser=null,pendingProfile=null,resetPin=false;
+let sessUser=null,pendingProfile=null,resetPin=false,pinMode="login";
+const DEVICE=(()=>{let d=ls.get("bl-device");if(!d||!/^[A-Za-z0-9_-]{20,100}$/.test(d)){const a=crypto.getRandomValues(new Uint8Array(24));d=btoa(String.fromCharCode(...a)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");ls.set("bl-device",d)}return d})();
 
 // ---------- الدخول برمز التحقق ----------
 let step="email",pending=null,cdT;
@@ -1005,7 +1006,7 @@ $("#lf").onsubmit=async e=>{
     if(!/^\S+@\S+\.\S+$/.test(em)) return lerr("اكتبي بريداً إلكترونياً صحيحاً، مثل teacher@school.edu.sa");
     ls.set("bl-last-email",em);busy(b,true);
     const h=await qp({action:"has",email:em});
-    if(h.has_pin){busy(b,false);return showPin(em)}
+    if(h.has_pin&&h.trusted){busy(b,false);pinMode="login";return showPin(em)}
     const ok=await sendCode();busy(b,false);
     if(ok){const t=$("#sentto").textContent;setStep("code");$("#sentto").textContent=t}
   } else if(step==="code"){
@@ -1016,6 +1017,14 @@ $("#lf").onsubmit=async e=>{
     busy(b,false);
     if(error) return lerr(authMsg(error));
     $("#otp").value="";enter(data.user);
+  } else if(step==="pin"&&pinMode==="confirm"){
+    const p=$("#pin").value;
+    if(!/^\d{4}$/.test(p)) return lerr("اكتبي رمزكِ السريع المكوّن من 4 أرقام.");
+    busy(b,true);const r=await qp({action:"check",pin:p});busy(b,false);$("#pin").value="";
+    if(r.ok){const prof=pendingProfile;pendingProfile=null;await openApp(prof,sessUser);return toast("تم التحقق من هذا الجهاز. في المرة القادمة ادخلي ببريدكِ ورمزكِ السريع فقط.",4500)}
+    if(r.error==="wrong_pin") return lerr(`الرمز غير صحيح. بقي ${r.remaining} ${r.remaining===1?"محاولة":"محاولات"}.`),$("#pin").focus();
+    if(r.error==="locked"||r.error==="no_pin"){resetPin=true;showLogin("setpin");return lerr(r.error==="locked"?"تجاوزتِ عدد المحاولات، فأُقفل الرمز السريع. اختاري رمزاً سريعاً جديداً.":"اختاري رمزكِ السريع.")}
+    return lerr("تعذّر التحقق من الرمز الآن. تحققي من الإنترنت وحاولي مرة أخرى.");
   } else if(step==="pin"){
     const em=$("#em").value.trim(),p=$("#pin").value;
     if(!/^\d{4}$/.test(p)) return lerr("اكتبي رمزكِ السريع المكوّن من 4 أرقام.");
@@ -1028,6 +1037,11 @@ $("#lf").onsubmit=async e=>{
     }
     busy(b,false);
     if(r.error==="wrong_pin") return lerr(`الرمز غير صحيح. بقي ${r.remaining} ${r.remaining===1?"محاولة":"محاولات"}.`),$("#pin").focus();
+    if(r.error==="untrusted"){
+      busy(b,true);const ok=await sendCode();busy(b,false);
+      if(ok){const t=$("#sentto").textContent;setStep("code");$("#sentto").textContent=t;lerr("هذا جهاز جديد. أرسلنا رمز تحقق إلى بريدكِ مرة واحدة.")}
+      return;
+    }
     if(r.error==="locked"||r.error==="no_pin"){
       resetPin=true;busy(b,true);const ok=await sendCode();busy(b,false);
       if(ok){const t=$("#sentto").textContent;setStep("code");$("#sentto").textContent=t;
@@ -1047,7 +1061,7 @@ $("#lf").onsubmit=async e=>{
     $("#np1").value=$("#np2").value="";
     const prof=pendingProfile;pendingProfile=null;
     await openApp(prof,sessUser);
-    toast("حُفظ رمزكِ السريع. في المرة القادمة ادخلي ببريدكِ ثم رمزكِ السريع، من أي جهاز.",5000);
+    toast("حُفظ رمزكِ السريع. في المرة القادمة ادخلي ببريدكِ ثم رمزكِ السريع.",5000);
   } else {
     const fn=$("#fn").value.trim().replace(/\s+/g," ");
     if(fn.split(" ").length<2) return lerr("اكتبي اسمكِ الكامل كما سيظهر في السجلات.");
@@ -1078,13 +1092,17 @@ async function enter(user){
   if(error){showLogin("email");return lerr(authMsg(error))}
   if(!data){pending=user;showLogin("name");loadFirstClasses();return}
   const st=await qp({action:"status"});
-  if(resetPin||st.has_pin===false){pendingProfile=data;$("#npu").value=user.email||"";return showLogin("setpin")}
+  if(resetPin||st.has_pin===false||st.locked){pendingProfile=data;$("#npu").value=user.email||"";return showLogin("setpin")}
+  if(st.has_pin&&st.trusted===false){pendingProfile=data;pinMode="confirm";showPin(user.email);
+    $("#pinhi").textContent=user.email;return lerr("")}
   openApp(data,user);
 }
-function showPin(em){$("#pinu").value=em;$("#pinhi").textContent=em;showLogin("pin")}
+function showPin(em){$("#pinu").value=em;$("#pinhi").textContent=em;showLogin("pin");
+  $("#pinnote").textContent=pinMode==="confirm"?"جهاز جديد: تحقّقنا من بريدكِ، والآن اكتبي رمزكِ السريع المعتاد لتأكيد هذا الجهاز.":"ادخلي برمزكِ السريع المكوّن من 4 أرقام.";
+  $("#pinchg").hidden=pinMode==="confirm"}
 async function fullSignOut(msg){
   const em=sessUser?.email||$("#em").value||ls.get("bl-last-email")||"";
-  await db?.auth.signOut();sessUser=null;me=null;students=[];scores={};assigned=[];lastRec=null;pendingProfile=null;
+  await db?.auth.signOut();pinMode="login";sessUser=null;me=null;students=[];scores={};assigned=[];lastRec=null;pendingProfile=null;
   $("#em").value=em;showLogin("email");if(msg)lerr(msg);
 }
 async function openApp(profile,user){
@@ -1102,7 +1120,9 @@ document.addEventListener("click",async e=>{
   if(!e.target.closest("[data-out]"))return;
   fullSignOut();
 });
-$("#forgot").onclick=async()=>{lerr("");resetPin=true;const b=$("#lbtn");busy(b,true);const ok=await sendCode();busy(b,false);
+$("#forgot").onclick=async()=>{lerr("");resetPin=true;
+  if(pinMode==="confirm"&&sessUser){$("#npu").value=sessUser.email||"";return showLogin("setpin")}
+  const b=$("#lbtn");busy(b,true);const ok=await sendCode();busy(b,false);
   if(ok){const t=$("#sentto").textContent;setStep("code");$("#sentto").textContent=t}};
 $("#pin").oninput=e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4);if(e.target.value.length===4)$("#lf").requestSubmit()};
 $("#pinchg").onclick=()=>{$("#pin").value="";setStep("email")};
