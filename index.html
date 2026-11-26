@@ -741,7 +741,7 @@ async function detail(){
     <div class="kv"><div><small>المجموع النهائي</small><b>${sc(id)} / ${max()}</b></div><div><small>الصف الدراسي</small><b>${esc(g)}</b></div><div><small>الفصل</small><b>${esc(sec)}</b></div></div>
     <div class="subh">تفاصيل الفرص والمشاركات المرصودة<span class="badge" id="evc">…</span></div>
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
-    <button class="gbtn wide" id="pone" style="font-size:15px;margin-bottom:14px">${I.print}طباعة تقرير فردي للطالبة فقط (PDF)</button>
+    <button class="gbtn wide" id="pone" style="font-size:15px;margin-bottom:14px">${I.print}طباعة تقرير فردي للطالبة (PDF)</button>
     <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><img class="stampimg" src="${STAMP}" alt="ختم المدرسة"></div>
     <button class="gbtn dark wide" id="pcomp" style="font-size:15px;margin-top:10px">${I.print}طباعة تقرير شامل للاعتماد النهائي</button>`;
   $("#pcomp").onclick=printComprehensive;$("#pone").onclick=async()=>{const st=students.find(x=>x.id===det);if(!st)return;
