@@ -270,3 +270,26 @@ returns table (class_id bigint, full_name text) language sql stable security def
 $$;
 revoke all on function public.class_teachers() from public, anon;
 grant execute on function public.class_teachers() to authenticated;
+
+-- اسم المعلمة يُربط ببريد واحد فقط (الأسماء تُقارن بعد توحيد المسافات والهمزات والتاء المربوطة والألف المقصورة)
+create or replace function public.norm_name(t text)
+returns text language sql immutable set search_path = '' as $$
+  select translate(
+           regexp_replace(regexp_replace(btrim(coalesce(t, '')), '[ً-ْـ]', '', 'g'), '\s+', ' ', 'g'),
+           'أإآٱةى', 'ااااهي')
+$$;
+create or replace function public.enforce_unique_teacher_name()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare n text := public.norm_name(new.full_name);
+begin
+  if tg_op = 'UPDATE' and public.norm_name(old.full_name) = n then return new; end if;
+  perform pg_advisory_xact_lock(hashtext('teacher_name:' || n));
+  if exists (select 1 from public.profiles where id <> new.id and public.norm_name(full_name) = n) then
+    raise exception 'name_taken' using errcode = 'P0001', hint = 'This teacher name is already linked to another email';
+  end if;
+  return new;
+end $$;
+revoke all on function public.enforce_unique_teacher_name() from public, anon, authenticated;
+create trigger profiles_unique_name
+  before insert or update of full_name on public.profiles
+  for each row execute function public.enforce_unique_teacher_name();

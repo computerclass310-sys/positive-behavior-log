@@ -110,6 +110,7 @@ span.chip{box-shadow:none}
 .sumt th,.sumt td{padding:9px 4px;text-align:center;border-bottom:1px solid var(--edge)}
 .sumt th{font-size:12px;color:var(--mute);font-weight:500}.sumt td:first-child,.sumt th:first-child{text-align:right}
 .sumt tfoot td{font-weight:800;border-bottom:0}.sumt td:first-child{white-space:nowrap;padding-left:8px}.sumt td.tn{text-align:right;font-size:12.5px;line-height:1.6}.sumt td.tn .none{color:var(--mute)}.sumt th:nth-child(2){text-align:right}.sumt .no{color:#c0261d}
+.pinlinks{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 4px 0}
 .fold>summary{list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}.fold>summary::-webkit-details-marker{display:none}
 .fold>summary h3{margin:0}.fold .fchev{margin-inline-start:auto;transition:transform .2s ease}.fold[open] .fchev{transform:rotate(180deg)}
 .fold[open]>summary h3{margin-bottom:4px}.fold .na{font-size:13px;font-weight:500;color:#8a8a8a}
@@ -332,11 +333,11 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
           <label class="l" for="fsub">المادة <small>اختياري</small></label>
           <div class="field"><input id="fsub" placeholder="مثال: الرياضيات"></div></div>
         <div data-step="pin" hidden><p id="pinhi" dir="ltr" style="font-size:16px;font-weight:700;margin:8px 4px 0;text-align:right"></p>
-          <p style="font-size:13px;color:var(--mute);margin:2px 4px 0"><span id="pinnote">ادخلي برمزكِ السريع المكوّن من 4 أرقام.</span> <button type="button" class="linkbtn" id="pinchg">بريد آخر؟</button></p>
+          <p style="font-size:13px;color:var(--mute);margin:2px 4px 0"><span id="pinnote">ادخلي برمزكِ السريع المكوّن من 4 أرقام.</span></p>
           <input class="pinuser" id="pinu" type="email" autocomplete="username" readonly tabindex="-1" aria-label="البريد المرتبط بالرمز" dir="ltr">
           <label class="l" for="pin">رمز الدخول السريع</label>
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="pin" class="pinin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" dir="ltr" placeholder="••••"></div>
-          <div style="text-align:center;margin-top:12px"><button type="button" class="linkbtn" id="forgot">نسيتِ الرمز؟ الدخول برمز يصل إلى البريد</button></div></div>
+          <div class="pinlinks"><button type="button" class="linkbtn" id="forgot">نسيتِ الرمز؟</button><button type="button" class="linkbtn" id="pinchg">تسجيل بريد جديد</button></div></div>
         <div data-step="setpin" hidden><p style="font-size:16px;font-weight:700;margin:8px 4px 0">اختاري رمز الدخول السريع</p>
           <p style="font-size:13px;color:var(--mute);line-height:1.7;margin:2px 4px 0">رمز من 4 أرقام تختارينه أنتِ، يُحفظ مشفّراً في قاعدة البيانات، لتدخلي به من أي جهاز.</p>
           <label class="l" for="npu">البريد الإلكتروني</label>
@@ -956,7 +957,7 @@ $("#pf").onsubmit=async e=>{
   if(fn.split(" ").length<2) return toast("اكتبي اسمكِ الكامل");
   const upd={full_name:fn,subject:$("#pfs").value.trim()||null};
   const {error}=await db.from("profiles").update(upd).eq("id",me.id);
-  if(error) return fail(error,"لم تُحفظ البيانات");
+  if(error) return fail(error,/name_taken/.test(error.message||"")?"هذا الاسم مسجّل ببريد آخر، ولا يُربط الاسم إلا ببريد واحد.":"لم تُحفظ البيانات");
   Object.assign(me,upd);profileUI();$("#pf").hidden=true;rank();toast("حُفظت بياناتكِ");
 };
 const setMax=v=>{me.max_points=Math.max(5,Math.min(40,v));profileUI();pick();rank();
@@ -1139,7 +1140,7 @@ $("#lf").onsubmit=async e=>{
     if(!fpick.length) return lerr("اختاري الصف المسند إليكِ من القائمة، صفاً واحداً على الأقل.");
     busy(b,true);
     const {data,error}=await db.from("profiles").insert({id:pending.id,full_name:fn,subject:$("#fsub").value.trim()||null}).select().single();
-    if(error){busy(b,false);return lerr("تعذّر حفظ بياناتكِ. حاولي مرة أخرى.")}
+    if(error){busy(b,false);return lerr(/name_taken/.test(error.message||"")?"هذا الاسم مسجّل ببريد آخر، ولا يُربط الاسم إلا ببريد واحد. إن كان اسمكِ فادخلي بالبريد المسجّل به.":"تعذّر حفظ بياناتكِ. حاولي مرة أخرى.")}
     const t=await db.from("teacher_classes").insert(fpick.map((id,i)=>({class_id:id,is_primary:i===0})));
     busy(b,false);
     if(t.error) toast(isFull(t.error)?"حُفظ اسمكِ، لكن أحد الصفوف اكتمل بمعلمتين قبل الحفظ. اختاري صفوفكِ من الإعدادات.":"حُفظ اسمكِ، لكن لم تُحفظ الصفوف. اختاريها من الإعدادات.",5000);
