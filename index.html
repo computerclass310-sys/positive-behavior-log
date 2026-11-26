@@ -182,6 +182,20 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .multi .chip[aria-pressed=true]::before{content:"✓ "}
 .multi .chip[data-main=true]::after{content:" · رئيسي";font-size:12px;opacity:.85}
 #printbox{display:none}
+#printbox .page.cp{font-family:"Tajawal",Tahoma,sans-serif;color:#1f1f1f}
+#printbox .cp-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;font-weight:700;margin:0 2px 12px}
+#printbox .cp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+#printbox .cp-stats div{border:1px solid #bbb;border-radius:8px;padding:6px;text-align:center}
+#printbox .cp-stats small{display:block;font-size:11px;color:#555}#printbox .cp-stats b{font-size:18px;font-weight:800}
+#printbox .cp table thead{display:table-header-group}
+#printbox .cp tr{break-inside:avoid;page-break-inside:avoid}
+#printbox .cp td.nm{text-align:right}
+#printbox .cp td.ok{font-weight:700}
+#printbox .cp-sign{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px;break-inside:avoid;page-break-inside:avoid}
+#printbox .cp-sign div{border:1px solid #bbb;border-radius:8px;padding:8px 10px;min-height:120px;font-size:13px;line-height:1.9}
+#printbox .cp-sign b{display:block;font-size:14px;border-bottom:1px solid #ddd;margin-bottom:4px}
+#printbox .cp-sign .tsig{max-height:40px}
+#printbox .cp-end{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;break-inside:avoid;page-break-inside:avoid;font-size:12px}
 #printbox .page.ac{height:297mm;display:flex;flex-direction:column;gap:4.5mm;font-family:"Tajawal",Tahoma,sans-serif;color:#1f1f1f}
 #printbox .ac .hdline{margin:6px 0 0}
 #printbox .ac-hero{display:grid;grid-template-columns:1fr auto;gap:8mm;align-items:center;background:#f4ece7!important;border-radius:6mm;padding:5mm 7mm}
@@ -668,8 +682,9 @@ async function detail(){
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
     <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><img class="stampimg" src="${STAMP}" alt="ختم المدرسة"></div>
     <button class="gbtn wide" id="pone" style="font-size:15px">${I.print}طباعة التقرير الفردي لهذه الطالبة فقط (PDF)</button>
-    <button class="gbtn wide" id="pach" style="font-size:15px;margin-top:10px">${I.award}طباعة بطاقة الإنجاز للطالبة</button>`;
-  $("#pone").onclick=printOne;$("#pach").onclick=()=>{const st=students.find(x=>x.id===det);if(st)printDoc(achPage(st,[...detRecs].reverse()))};
+    <button class="gbtn wide" id="pach" style="font-size:15px;margin-top:10px">${I.award}طباعة بطاقة الإنجاز للطالبة</button>
+    <button class="gbtn wide" id="pcomp" style="font-size:15px;margin-top:10px">${I.print}طباعة تقرير شامل للاعتماد النهائي</button>`;
+  $("#pone").onclick=printOne;$("#pcomp").onclick=printComprehensive;$("#pach").onclick=()=>{const st=students.find(x=>x.id===det);if(st)printDoc(achPage(st,[...detRecs].reverse()))};
   const {data,error}=await db.from("behavior_records").select("id,description,category,points,created_at,attachment_path,signature,profiles(full_name)").eq("student_id",id).eq("teacher_id",me.id).order("created_at",{ascending:false});
   if(id!==det) return;
   if(error){$("#evs").innerHTML=`<p class="muted">تعذّر تحميل السجلات.</p>`;return fail(error)}
@@ -722,6 +737,26 @@ function achPage(s,recs){
     <div><h2>السلوكيات المرصودة</h2>${recs.length?`<ol>${items}</ol>${more}`:`<p class="ac-cap">لا توجد سلوكيات مرصودة بعد.</p>`}</div>
     <div class="ac-ft"><div>${tot>=m?"نشكر الطالبة على مبادراتها، ونتمنى لها دوام التميز.":"نشجع الطالبة على مواصلة مبادراتها الإيجابية."}<br><b>المعلمة:</b> ${esc(tname())}<br><b>التوقيع:</b> ${sig?`<img class="tsig" src="${sig}" alt="توقيع المعلمة">`:"...................."}<br><b>التاريخ:</b> ${fmtDate(new Date())}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div>
   </section>`;
+}
+async function printComprehensive(){
+  const l=classRows();if(!l.length) return toast("لا توجد طالبات في هذا الصف");
+  toast("جارٍ تجهيز التقرير الشامل…");
+  const {data,error}=await db.from("behavior_records").select("student_id,points,created_at,signature").eq("teacher_id",me.id).in("student_id",l.map(s=>s.id));
+  if(error) return fail(error,"تعذّر تجهيز التقرير، حاولي مرة أخرى");
+  const m=max(),cnt={},sum={};let sig=lastSig,lastAt="";
+  data.forEach(r=>{cnt[r.student_id]=(cnt[r.student_id]||0)+1;sum[r.student_id]=(sum[r.student_id]||0)+r.points;if(r.signature&&String(r.created_at)>lastAt){lastAt=String(r.created_at);sig=r.signature}});
+  const rows=[...l].sort((a,b)=>a.full_name.localeCompare(b.full_name,"ar"));
+  const done=rows.filter(s=>(sum[s.id]||0)>=m).length,avgP=rows.length?Math.round(rows.reduce((a,s)=>a+Math.min((sum[s.id]||0)/m,1),0)/rows.length*100):0;
+  const body=rows.map((s,i)=>{const t=sum[s.id]||0;return `<tr><td>${AR(i+1)}</td><td class="nm">${esc(s.full_name)}</td><td>${AR(cnt[s.id]||0)}</td><td>${AR(t)} / ${AR(m)}</td><td class="${t>=m?"ok":""}">${status(t)[0]}</td></tr>`}).join("");
+  printDoc(`<section class="page cp">${header()}<div class="ft">التقرير الشامل لدرجات السلوك الإيجابي</div>
+    <div class="cp-meta"><span>الصف: ${esc(cname(rcls))}</span><span>المعلمة: ${esc(tname())}</span><span>العام الدراسي: ${HY}</span><span>تاريخ التقرير: ${fmtDate(new Date())}</span></div>
+    <div class="cp-stats"><div><small>عدد الطالبات</small><b>${AR(rows.length)}</b></div><div><small>المستوفيات</small><b>${AR(done)}</b></div><div><small>غير المستوفيات</small><b>${AR(rows.length-done)}</b></div><div><small>متوسط الإنجاز</small><b>٪${AR(avgP)}</b></div></div>
+    <table><colgroup><col style="width:34px"><col><col style="width:16%"><col style="width:16%"><col style="width:18%"></colgroup>
+      <thead><tr><th>م</th><th>اسم الطالبة</th><th>عدد المشاركات</th><th>المجموع</th><th>الحالة</th></tr></thead><tbody>${body}</tbody></table>
+    <div class="cp-sign"><div><b>المعلمة</b>الاسم: ${esc(tname())}<br>التوقيع: ${sig?`<img class="tsig" src="${sig}" alt="توقيع المعلمة">`:"...................."}</div>
+      <div><b>الموجهة الطلابية</b>الاسم: ....................<br>التوقيع: ....................</div>
+      <div><b>قائدة المدرسة</b>الاسم: ....................<br>التوقيع: ....................<br>الاعتماد: ☐ معتمد</div></div>
+    <div class="cp-end"><span>عدد السجلات المرصودة: ${AR(data.length)}</span><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div></section>`);
 }
 async function printClass(l,page=formPage){
   toast("جارٍ تجهيز صفحات الطباعة…");
