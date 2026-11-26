@@ -716,24 +716,15 @@ const dl=(name,type,text)=>{const a=document.createElement("a");a.href=URL.creat
 function achPage(s,recs){
   const m=max(),tot=recs.reduce((a,r)=>a+r.points,0),pct=Math.min(tot/m,1),R=62,C=2*Math.PI*R;
   const ring=`<svg viewBox="0 0 160 160" class="ac-ring" aria-hidden="true"><circle cx="80" cy="80" r="${R}" fill="none" stroke="#ece6e1" stroke-width="16"/>${tot?`<circle cx="80" cy="80" r="${R}" fill="none" stroke="#5f614f" stroke-width="16" stroke-linecap="round" stroke-dasharray="${(C*pct).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 80 80)"/>`:""}</svg>`;
-  let cum=0;const cs=recs.map(r=>cum+=r.points),shownC=cs.slice(-12),off=cs.length-shownC.length;
-  const W=640,H=112,pad=28,maxv=Math.max(m,cum)+2,bw=(W-pad*2)/Math.max(shownC.length,1);
-  const bars=shownC.map((v,i)=>{const h=(H-40)*v/maxv,x=pad+i*bw+bw*.2,y=H-22-h;
-    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(bw*.6).toFixed(1)}" height="${h.toFixed(1)}" rx="6" fill="${v>=m?"#5f614f":"#b9bba6"}"/><text x="${(x+bw*.3).toFixed(1)}" y="${(y-6).toFixed(1)}" text-anchor="middle" class="bv">${AR(v)}</text><text x="${(x+bw*.3).toFixed(1)}" y="${H-6}" text-anchor="middle" class="bl">${AR(off+i+1)}</text>`}).join("");
-  const qy=H-22-(H-40)*m/maxv;
-  const chart=recs.length?`<svg viewBox="0 0 ${W} ${H}" class="ac-chart" role="img" aria-label="تراكم الدرجات مع كل رصد"><line x1="${pad}" x2="${W-pad}" y1="${qy.toFixed(1)}" y2="${qy.toFixed(1)}" stroke="#c8a96a" stroke-width="2" stroke-dasharray="6 5"/><text x="${pad+86}" y="${(qy-6).toFixed(1)}" class="ql">النصاب ${AR(m)}</text>${bars}</svg><p class="ac-cap">كل عمود هو مجموع درجات الطالبة بعد كل رصد بالترتيب، والخط المتقطع هو النصاب.</p>`:`<p class="ac-cap">لم تُرصد سلوكيات لهذه الطالبة بعد.</p>`;
-  const MAXL=8,shown=recs.slice(-MAXL);
+  const MAXL=14,shown=recs.slice(-MAXL);
   const items=shown.map(r=>`<li><span class="ac-dot"></span><div class="ac-tx"><b>${esc(r.description)}</b><small>${fmtDate(r.created_at)} · أ. ${esc(r.profiles?.full_name||me?.full_name||"")}</small></div><span class="ac-chip">+${AR(r.points)}</span></li>`).join("");
   const more=recs.length>MAXL?`<p class="ac-more">و${AR(recs.length-MAXL)} سلوكيات أخرى مرصودة سابقاً.</p>`:"";
-  const last=recs.length?fmtDate(recs[recs.length-1].created_at):"—",best=recs.length?"+"+AR(Math.max(...recs.map(r=>r.points))):"—";
   const sig=[...recs].reverse().find(r=>r.signature)?.signature||lastSig;
   return `<section class="page ac">${header()}
     <div class="ac-hero"><div><div class="ac-k">بطاقة إنجاز السلوك الإيجابي · العام الدراسي ${HY}</div><h1>${esc(s.full_name)}</h1>
       <div class="ac-meta"><span>الصف: ${esc(cname(s.class_id))}</span><span>المعلمة: ${esc(tname())}</span><span>${AR(recs.length)} مشاركات معتمدة</span></div>
       <span class="ac-verdict">${tot>=m?"✓ مستوفية للنصاب":status(tot)[0]}</span></div>
       <div class="ac-ringbox">${ring}<div class="ac-ringv"><div><b>${AR(tot)}</b><br><small>من ${AR(m)} درجة</small></div></div></div></div>
-    <div class="ac-stats"><div><small>المشاركات</small><b>${AR(recs.length)}</b></div><div><small>أعلى درجة</small><b>${best}</b></div><div><small>نسبة الإنجاز</small><b>٪${AR(Math.round(tot/m*100))}</b></div><div><small>آخر رصد</small><b style="font-size:14px">${last}</b></div></div>
-    <div><h2>كيف تراكمت الدرجات</h2>${chart}</div>
     <div><h2>السلوكيات المرصودة</h2>${recs.length?`<ol>${items}</ol>${more}`:`<p class="ac-cap">لا توجد سلوكيات مرصودة بعد.</p>`}</div>
     <div class="ac-ft"><div>${tot>=m?"نشكر الطالبة على مبادراتها، ونتمنى لها دوام التميز.":"نشجع الطالبة على مواصلة مبادراتها الإيجابية."}<br><b>المعلمة:</b> ${esc(tname())}<br><b>التوقيع:</b> ${sig?`<img class="tsig" src="${sig}" alt="توقيع المعلمة">`:"...................."}<br><b>التاريخ:</b> ${fmtDate(new Date())}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div>
   </section>`;
