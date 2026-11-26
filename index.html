@@ -399,8 +399,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
             <div class="grid2" style="margin-top:10px">
               <button class="gbtn" data-exp="excel"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/></svg>تصدير ملف Excel</button>
               <button class="gbtn" data-exp="word"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>تصدير ملف Word</button>
-            </div>              <button class="gbtn wide" data-exp="ach" style="grid-column:1/-1"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg>طباعة بطاقات الإنجاز للصف</button>
-            </div>
+            </div></div>
           <div class="card" style="padding:14px"><div class="field"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg><input id="rq" type="search" placeholder="ابحثي باسم الطالبة أو السجل..." aria-label="البحث في التقرير"></div></div>
           <div class="card"><h3 id="ltitle">كل طالبات الصف</h3><div class="list" id="rank"></div></div>
           <div class="card" id="det"></div>
@@ -684,9 +683,8 @@ async function detail(){
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
     <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><img class="stampimg" src="${STAMP}" alt="ختم المدرسة"></div>
     <button class="gbtn wide" id="pone" style="font-size:15px">${I.print}طباعة التقرير الفردي لهذه الطالبة فقط (PDF)</button>
-    <button class="gbtn wide" id="pach" style="font-size:15px;margin-top:10px">${I.award}طباعة بطاقة الإنجاز للطالبة</button>
     <button class="gbtn wide" id="pcomp" style="font-size:15px;margin-top:10px">${I.print}طباعة تقرير شامل للاعتماد النهائي</button>`;
-  $("#pone").onclick=printOne;$("#pcomp").onclick=printComprehensive;$("#pach").onclick=async()=>{const st=students.find(x=>x.id===det);if(!st)return;
+  $("#pcomp").onclick=printComprehensive;$("#pone").onclick=async()=>{const st=students.find(x=>x.id===det);if(!st)return;
     const {data,error}=await db.from("behavior_records").select("description,points,created_at,signature,teacher_id,profiles(full_name)").eq("student_id",st.id).order("created_at",{ascending:true});
     if(error) return fail(error,"تعذّر تجهيز بطاقة الإنجاز");
     printDoc(achPage(st,[...data].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)))))};
@@ -703,10 +701,6 @@ $("#det").addEventListener("click",async e=>{
   if(error||!data?.signedUrl){w&&w.close();return fail(error,"تعذّر فتح المرفق")}
   if(w) w.location=data.signedUrl; else location.href=data.signedUrl;
 });
-function printOne(){
-  const s=students.find(x=>x.id===det);if(!s)return;
-  printDoc(formPage(s,[...detRecs].reverse()));
-}
 $("#share").onclick=async()=>{
   const l=classRows(),m=max();if(!l.length) return toast("لا توجد طالبات في هذا الصف لإرسال تقريره");
   const done=l.filter(s=>sc(s.id)>=m).length;
@@ -768,8 +762,7 @@ function exportAs(kind){
   if(!l.length) return toast("لا توجد طالبات في هذا الصف للتصدير");
   const rows=l.map((s,i)=>[i+1,s.full_name,cname(s.class_id),sc(s.id),m,status(sc(s.id))[0]]);
   const head=["#","اسم الطالبة","الصف","المجموع","النصاب","الحالة"];
-  if(kind==="pdf") return printClass(l);
-  if(kind==="ach") return printClass(l,achPage,true);
+  if(kind==="pdf") return printClass(l,achPage,true);
   if(kind==="excel"){
     if(window.XLSX){const ws=XLSX.utils.aoa_to_sheet([head,...rows]);const wb=XLSX.utils.book_new();wb.Workbook={Views:[{RTL:true}]};XLSX.utils.book_append_sheet(wb,ws,"السجل");dl(`${fname}.xlsx`,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",XLSX.write(wb,{bookType:"xlsx",type:"array"}))}
     else{const q=v=>`"${String(v).replace(/"/g,'""')}"`;dl(`${fname}.csv`,"text/csv;charset=utf-8","﻿"+[head,...rows].map(r=>r.map(q).join(",")).join("\r\n"))}
