@@ -152,3 +152,8 @@ create policy "teacher removes own assignment" on public.teacher_classes for del
 
 -- أُزيل رقم هوية الطالبة نهائياً (لا يُطلب ولا يُخزَّن)
 alter table public.students drop column national_id;
+
+-- الدرجات حسب النموذج الرسمي: 2 أو 4 أو 6 (القيم القديمة مسموحة مؤقتاً)
+alter table public.behavior_records drop constraint behavior_records_points_check;
+alter table public.behavior_records add constraint behavior_records_points_check
+  check (points in (1, 2, 3, 4, 5, 6));

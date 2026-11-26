@@ -453,12 +453,12 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const tints=["rgba(186,200,224,.7)","rgba(208,190,163,.7)","rgba(235,219,211,.9)","rgba(143,145,124,.45)"];
 const STAMP="stamp.png",LOGO="moe-logo.png";
-const POINTS=[1,2,3,5];
+const POINTS=[2,4,6];
 const HEAD_LINES=["المملكة العربية السعودية","وزارة التعليم","(٢٨٠)","الإدارة العامة للتعليم بالمنطقة الشرقية"];
 const FMT=["pdf","excel","word"],FMTL=["PDF","Excel","Word"];
 const TITLES={rec:"الرصد",rep:"المتابعة",stu:"الطالبات",set:"الإعدادات"};
 const db=SUPABASE_URL&&SUPABASE_KEY&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
-let me=null,email="",classes=[],assigned=[],fpick=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,detRecs=[],pts=3,flt=0,editId=null,evFile=null,lastRec=null,toastT,maxT;
+let me=null,email="",classes=[],assigned=[],fpick=[],students=[],scores={},cls=null,rcls=null,sel=null,det=null,detRecs=[],pts=2,flt=0,editId=null,evFile=null,lastRec=null,toastT,maxT;
 const prefs={needsig:true,notify:true,frost:false};
 try{Object.assign(prefs,JSON.parse(localStorage.getItem("bl-prefs")||"{}"))}catch(e){}
 const savePrefs=()=>{try{localStorage.setItem("bl-prefs",JSON.stringify(prefs))}catch(e){}};
