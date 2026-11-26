@@ -231,7 +231,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
       <form class="card" id="lf" novalidate>
         <div class="divider">عبر البريد الأكاديمي المدرسي</div>
         <div data-step="email"><label class="l" for="em">البريد المدرسي</label>
-          <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg><input id="em" type="email" autocomplete="email" inputmode="email" dir="ltr" placeholder="teacher@school.edu.sa"></div></div>
+          <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg><input id="em" type="email" autocomplete="username email" inputmode="email" dir="ltr" placeholder="teacher@school.edu.sa"></div></div>
         <div data-step="code" hidden><p id="sentto" style="font-size:14px;color:var(--mute);line-height:1.7;margin:8px 4px 0"></p>
           <label class="l" for="otp">رمز التحقق الخاص بالمعلمة <small><button type="button" class="linkbtn" id="chg">تغيير البريد</button></small></label>
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="otp" inputmode="numeric" autocomplete="one-time-code" dir="ltr" maxlength="10" style="letter-spacing:.4em;font-size:20px;font-weight:600" placeholder="••••••"></div></div>
@@ -251,13 +251,14 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
           <div style="text-align:center;margin-top:12px"><button type="button" class="linkbtn" id="forgot">نسيتِ الرمز؟ الدخول برمز يصل إلى البريد</button></div></div>
         <div data-step="setpin" hidden><p style="font-size:16px;font-weight:700;margin:8px 4px 0">اختاري رمز الدخول السريع</p>
           <p style="font-size:13px;color:var(--mute);line-height:1.7;margin:2px 4px 0">رمز من 4 أرقام تختارينه أنتِ، لتدخلي به إلى التطبيق على هذا الجهاز.</p>
-          <input class="pinuser" id="npu" type="email" autocomplete="username" readonly tabindex="-1" aria-label="البريد المرتبط بالرمز" dir="ltr">
+          <label class="l" for="npu">البريد الإلكتروني</label>
+          <div class="field" style="background:rgba(255,255,255,.3)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg><input id="npu" type="email" autocomplete="username" readonly dir="ltr" style="color:var(--mute)"></div>
           <label class="l" for="np1">الرمز السريع</label>
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="np1" class="pinin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" dir="ltr" placeholder="••••"></div>
           <label class="l" for="np2">تأكيد الرمز</label>
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="np2" class="pinin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" dir="ltr" placeholder="••••"></div>
           <div class="pinnote"><span>💡</span><span><b>في المرة القادمة على هذا الجهاز ستدخلين بالرمز السريع فقط</b>، دون رمز البريد. وإن فتحتِ التطبيق من جهاز آخر، فسيصلكِ رمز على البريد مرة واحدة ثم تختارين رمزاً سريعاً لذلك الجهاز.</span></div>
-          <div class="pinnote" style="background:rgba(186,200,224,.3)"><span>🔐</span><span>إذا سألكِ جوالكِ <b>«حفظ كلمة المرور؟»</b> بعد الحفظ، فاختاري <b>حفظ</b>، ليُملأ الرمز تلقائياً في المرة القادمة دون أن تكتبيه.</span></div></div>
+          <div class="pinnote" style="background:rgba(186,200,224,.3)"><span>🔐</span><span>إذا سألكِ جوالكِ <b>«حفظ كلمة المرور؟»</b> بعد الحفظ، فاختاري <b>حفظ</b>، ليُحفظ بريدكِ والرمز معاً، ويُملآن تلقائياً في المرة القادمة دون أن تكتبيهما.</span></div></div>
         <p class="err" id="lerr" role="alert" hidden></p>
         <div style="height:16px"></div>
         <button class="gbtn dark wide" id="lbtn"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span id="lbtnt">إرسال رمز التحقق</span></button>
@@ -834,7 +835,7 @@ function cooldown(n){
   tick();cdT=setInterval(tick,1000);
 }
 async function sendCode(){
-  const em=$("#em").value.trim();
+  const em=$("#em").value.trim();ls.set("bl-last-email",em);
   const {error}=await db.auth.signInWithOtp({email:em,options:{shouldCreateUser:true}});
   if(error){lerr(authMsg(error));return false}
   $("#sentto").textContent=`أرسلنا رمز التحقق إلى ${em}. افتحي بريدكِ واكتبي الرمز هنا.`;
@@ -950,6 +951,7 @@ $("#signout").onclick=e=>{
 };
 $("#pincard").hidden=!canPin;
 
+if(!$("#em").value) $("#em").value=ls.get("bl-last-email")||"";
 (async()=>{
   if(!db) return lerr("تعذّر تحميل مكتبة الاتصال بقاعدة البيانات. تحققي من الإنترنت وحدّثي الصفحة.");
   const {data:{session}}=await db.auth.getSession();
