@@ -687,7 +687,7 @@ async function detail(){
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
     <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><img class="stampimg" src="${STAMP}" alt="ختم المدرسة"></div>
     <button class="gbtn wide" id="pone" style="font-size:15px">${I.print}طباعة تقرير فردي للطالبة فقط (PDF)</button>
-    <button class="gbtn wide" id="pcomp" style="font-size:15px;margin-top:10px">${I.print}طباعة تقرير شامل للاعتماد النهائي</button>`;
+    <button class="gbtn dark wide" id="pcomp" style="font-size:15px;margin-top:10px">${I.print}طباعة تقرير شامل للاعتماد النهائي</button>`;
   $("#pcomp").onclick=printComprehensive;$("#pone").onclick=async()=>{const st=students.find(x=>x.id===det);if(!st)return;
     const {data,error}=await db.from("behavior_records").select("description,points,created_at,signature,teacher_id,profiles(full_name)").eq("student_id",st.id).order("created_at",{ascending:true});
     if(error) return fail(error,"تعذّر تجهيز بطاقة الإنجاز");
