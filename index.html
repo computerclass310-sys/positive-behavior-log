@@ -186,17 +186,29 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 @media(max-width:900px){.cap{display:none}}
 @media(max-width:500px){.stage{padding:0;height:100%}.phone{width:100%;height:100svh;border-radius:0;box-shadow:none}.status{display:none}.login{padding-top:28px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}.gbtn:hover,.gbtn:active,button.chip:hover,button.chip:active,button.tile:hover,button.tile:active,.importcard:hover,.importcard:active,.tab:active{transform:none!important}}
+@page{size:A4 portrait;margin:12mm 13mm}
 @media print{
-  html.pp body{background:#fff}
-  html.pp .stage{display:none!important}
-  html.pp #printbox{display:block;color:#000;font:13px/1.7 "Readex Pro",Tahoma,sans-serif;padding:24px}
-  #printbox .ph{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:16px}
-  #printbox h1{font-size:18px}#printbox h2{font-size:15px;margin:16px 0 8px}
-  #printbox table{width:100%;border-collapse:collapse}#printbox th,#printbox td{border:1px solid #999;padding:6px 8px;text-align:right}
-  #printbox th{background:#eee}
-  #printbox .sigimg{height:70px}
-  #printbox .pstamp{width:170px;height:auto;transform:rotate(-6deg)}
-  #printbox .foot2{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px}
+  html.pp,html.pp body{background:#fff!important;height:auto;overflow:visible}
+  html.pp .stage,html.pp .toast{display:none!important}
+  html.pp #printbox{display:block;color:#000;background:#fff;font:14px/1.6 "Traditional Arabic","Amiri","Times New Roman",Tahoma,serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #printbox .page{break-after:page;page-break-after:always}
+  #printbox .page:last-child{break-after:auto;page-break-after:auto}
+  #printbox .hd{display:flex;justify-content:space-between;align-items:center;gap:20px}
+  #printbox .hdt{text-align:center;font:700 13px/1.55 Tahoma,Arial,sans-serif}
+  #printbox .hdl{width:190px;height:auto}
+  #printbox .hdline{border-top:3px solid #1f3a73;margin:8px 0 22px}
+  #printbox .ft{text-align:center;font-size:24px;font-weight:700;margin:0 0 22px}
+  #printbox .who{display:flex;justify-content:space-between;gap:20px;font-size:16px;font-weight:700;margin:0 4px 16px}
+  #printbox .who b{font-weight:700;border-bottom:1px dotted #000;padding:0 6px}
+  #printbox table{width:100%;border-collapse:collapse;table-layout:fixed}
+  #printbox th,#printbox td{border:1px solid #333;padding:5px 7px;text-align:center;vertical-align:middle;height:32px;font-size:14px}
+  #printbox th{background:#e7e7e7!important;font-weight:700}
+  #printbox td.dt{text-align:right}
+  #printbox .m{width:34px}#printbox .pc{width:40px}#printbox .tn{width:22%}#printbox .sg{width:17%}
+  #printbox td.sg img{max-height:28px;max-width:100%}
+  #printbox tfoot th{height:34px}
+  #printbox .pfoot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;font:700 14px/1.9 Tahoma,Arial,sans-serif}
+  #printbox .pstamp{width:165px;height:auto;transform:rotate(-6deg)}
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -337,7 +349,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
               <button type="button" class="tile" data-f="2" aria-pressed="false" style="background:rgba(208,190,163,.55)"><span>غير المستوفيات</span><b id="n2">0</b><small id="n2s"></small></button>
             </div></div>
           <div class="card"><h3><svg class="ic" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2"/><rect x="6" y="14" width="12" height="7"/></svg>إجراءات الطباعة والتصدير الشامل</h3>
-            <button class="gbtn dark wide" data-exp="pdf"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></svg>طباعة تقرير ملخص الصف كاملاً (PDF)</button>
+            <button class="gbtn dark wide" data-exp="pdf"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></svg>طباعة سجلات الصف كاملاً (PDF)</button>
             <div class="grid2" style="margin-top:10px">
               <button class="gbtn" data-exp="excel"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/></svg>تصدير ملف Excel</button>
               <button class="gbtn" data-exp="word"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>تصدير ملف Word</button>
@@ -440,7 +452,9 @@ const SUPABASE_KEY = "sb_publishable_FIlbYRr7tGPRNUq-oaO5kQ_-R5uE3hy"; // الم
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const tints=["rgba(186,200,224,.7)","rgba(208,190,163,.7)","rgba(235,219,211,.9)","rgba(143,145,124,.45)"];
-const STAMP="stamp.png";
+const STAMP="stamp.png",LOGO="moe-logo.png";
+const POINTS=[1,2,3,5];
+const HEAD_LINES=["المملكة العربية السعودية","وزارة التعليم","(٢٨٠)","الإدارة العامة للتعليم بالمنطقة الشرقية"];
 const FMT=["pdf","excel","word"],FMTL=["PDF","Excel","Word"];
 const TITLES={rec:"الرصد",rep:"المتابعة",stu:"الطالبات",set:"الإعدادات"};
 const db=SUPABASE_URL&&SUPABASE_KEY&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
@@ -520,7 +534,7 @@ function meter(){
 }
 $("#stuSel").onchange=e=>{sel=e.target.value?+e.target.value:null;pick()};
 $("#clsSel").onchange=e=>{cls=e.target.value?+e.target.value:null;sel=null;pick()};
-$("#pts").innerHTML=[1,2,3,5].map(p=>`<button type="button" class="gbtn" aria-pressed="${p===pts}" data-p="${p}">+${p}</button>`).join("");
+$("#pts").innerHTML=POINTS.map(p=>`<button type="button" class="gbtn" aria-pressed="${p===pts}" data-p="${p}">+${p}</button>`).join("");
 $("#pts").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;pts=+b.dataset.p;$$("#pts .gbtn").forEach(x=>x.setAttribute("aria-pressed",x===b));meter()};
 
 // المرفق
@@ -571,8 +585,21 @@ $("#save").onclick=async()=>{
 };
 
 // ---------- الطباعة ----------
-const phead=t=>`<div class="ph"><div><div>المملكة العربية السعودية</div><div>${esc(school()||"المدرسة")}</div><h1>${esc(t)}</h1></div><div style="text-align:left">العام الدراسي ${HY}<br>${esc(tname())}</div></div>`;
-const pfoot=sig=>`<div class="foot2"><div>المعلمة: ${esc(tname())}<br>${sig?`<img class="sigimg" src="${sig}" alt="التوقيع">`:"التوقيع: ............"}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div>`;
+const AR=v=>String(v).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const header=()=>`<div class="hd"><div class="hdt">${HEAD_LINES.map(l=>`<div>${l}</div>`).join("")}<div>${esc(school()||"الثانوية الثانية بالخبر")}</div></div><img class="hdl" src="${LOGO}" alt="وزارة التعليم"></div><div class="hdline"></div>`;
+function formPage(s,recs){
+  const ROWS=14,rows=recs.map((r,i)=>`<tr><td>${AR(i+1)}</td><td class="dt">${esc(r.description)}</td>${POINTS.map(v=>`<td>${r.points===v?"✓":""}</td>`).join("")}<td>${r.profiles?.full_name?"أ. "+esc(r.profiles.full_name):""}</td><td class="sg">${r.signature?`<img src="${r.signature}" alt="توقيع">`:""}</td></tr>`);
+  for(let i=rows.length;i<Math.max(ROWS,recs.length);i++) rows.push(`<tr><td>${AR(i+1)}</td><td></td>${POINTS.map(()=>"<td></td>").join("")}<td></td><td></td></tr>`);
+  const tot=recs.reduce((a,r)=>a+r.points,0);
+  return `<section class="page">${header()}<div class="ft">نموذج رصد درجات السلوك الإيجابي</div>
+    <div class="who"><span>اسم الطالبة : <b>${esc(s.full_name)}</b></span><span>الصف : <b>${esc(cname(s.class_id))}</b></span></div>
+    <table><colgroup><col class="m"><col><col span="${POINTS.length}" class="pc"><col class="tn"><col class="sg"></colgroup>
+    <thead><tr><th rowspan="2">م</th><th rowspan="2">تفاصيل السلوك الإيجابي</th><th colspan="${POINTS.length}">درجة المستحقة</th><th rowspan="2">اسم المعلمة</th><th rowspan="2">التوقيع</th></tr>
+    <tr>${POINTS.map(v=>`<th>${AR(v)}</th>`).join("")}</tr></thead>
+    <tbody>${rows.join("")}</tbody>
+    <tfoot><tr><th colspan="2">المجموع</th><th colspan="${POINTS.length}">${AR(tot)} / ${AR(max())}</th><th colspan="2">${status(tot)[0]}</th></tr></tfoot></table>
+    <div class="pfoot"><div>المعلمة: ${esc(tname())}<br>التاريخ: ${fmtDate(new Date())}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div></section>`;
+}
 function printDoc(html){
   $("#printbox").innerHTML=html;document.documentElement.classList.add("pp");
   const done=()=>{document.documentElement.classList.remove("pp");window.removeEventListener("afterprint",done)};
@@ -612,7 +639,7 @@ async function detail(){
     <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><img class="stampimg" src="${STAMP}" alt="ختم المدرسة"></div>
     <button class="gbtn wide" id="pone" style="font-size:15px">${I.print}طباعة التقرير الفردي لهذه الطالبة فقط (PDF)</button>`;
   $("#pone").onclick=printOne;
-  const {data,error}=await db.from("behavior_records").select("id,description,category,points,created_at,attachment_path,profiles(full_name)").eq("student_id",id).eq("teacher_id",me.id).order("created_at",{ascending:false});
+  const {data,error}=await db.from("behavior_records").select("id,description,category,points,created_at,attachment_path,signature,profiles(full_name)").eq("student_id",id).eq("teacher_id",me.id).order("created_at",{ascending:false});
   if(id!==det) return;
   if(error){$("#evs").innerHTML=`<p class="muted">تعذّر تحميل السجلات.</p>`;return fail(error)}
   detRecs=data;$("#evc").textContent=`${data.length} سجلات معتمدة`;
@@ -627,8 +654,7 @@ $("#det").addEventListener("click",async e=>{
 });
 function printOne(){
   const s=students.find(x=>x.id===det);if(!s)return;
-  printDoc(phead("سجل درجات السلوك الإيجابي")+`<table><tr><th>اسم الطالبة</th><td colspan="3">${esc(s.full_name)}</td></tr><tr><th>الصف</th><td>${esc(cname(s.class_id))}</td><th>المجموع النهائي</th><td>${sc(s.id)} / ${max()}</td></tr></table>
-    <h2>تفاصيل الفرص والمشاركات المرصودة (${detRecs.length})</h2><table><tr><th>#</th><th>السلوك</th><th>الدرجة</th><th>التاريخ</th></tr>${detRecs.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.description)}</td><td>+${r.points}</td><td>${fmtDate(r.created_at)}</td></tr>`).join("")||`<tr><td colspan="4">لا توجد سجلات</td></tr>`}</table>`+pfoot(null));
+  printDoc(formPage(s,[...detRecs].reverse()));
 }
 $("#share").onclick=async()=>{
   const l=classRows(),m=max();if(!l.length) return toast("لا توجد طالبات في هذا الصف لإرسال تقريره");
@@ -641,12 +667,19 @@ $("#share").onclick=async()=>{
 
 // التصدير
 const dl=(name,type,text)=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+async function printClass(l){
+  toast("جارٍ تجهيز صفحات الطباعة…");
+  const ids=l.map(s=>s.id),{data,error}=await db.from("behavior_records").select("student_id,description,points,created_at,signature,profiles(full_name)").eq("teacher_id",me.id).in("student_id",ids).order("created_at",{ascending:true});
+  if(error) return fail(error,"تعذّر تجهيز الطباعة، حاولي مرة أخرى");
+  const by={};data.forEach(r=>(by[r.student_id]=by[r.student_id]||[]).push(r));
+  printDoc([...l].sort((a,b)=>a.full_name.localeCompare(b.full_name,"ar")).map(s=>formPage(s,by[s.id]||[])).join(""));
+}
 function exportAs(kind){
   const l=classRows(),m=max(),title=`سجل درجات السلوك الإيجابي - ${cname(rcls)} - ${tname()}`,fname=`positive-behavior-class${rcls}-${new Date().toISOString().slice(0,10)}`;
   if(!l.length) return toast("لا توجد طالبات في هذا الصف للتصدير");
   const rows=l.map((s,i)=>[i+1,s.full_name,cname(s.class_id),sc(s.id),m,status(sc(s.id))[0]]);
   const head=["#","اسم الطالبة","الصف","المجموع","النصاب","الحالة"];
-  if(kind==="pdf") return printDoc(phead(`ملخص درجات السلوك الإيجابي · ${cname(rcls)}`)+`<table><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</table>`+pfoot(null));
+  if(kind==="pdf") return printClass(l);
   if(kind==="excel"){
     if(window.XLSX){const ws=XLSX.utils.aoa_to_sheet([head,...rows]);const wb=XLSX.utils.book_new();wb.Workbook={Views:[{RTL:true}]};XLSX.utils.book_append_sheet(wb,ws,"السجل");dl(`${fname}.xlsx`,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",XLSX.write(wb,{bookType:"xlsx",type:"array"}))}
     else{const q=v=>`"${String(v).replace(/"/g,'""')}"`;dl(`${fname}.csv`,"text/csv;charset=utf-8","﻿"+[head,...rows].map(r=>r.map(q).join(",")).join("\r\n"))}
