@@ -182,6 +182,35 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .multi .chip[aria-pressed=true]::before{content:"✓ "}
 .multi .chip[data-main=true]::after{content:" · رئيسي";font-size:12px;opacity:.85}
 #printbox{display:none}
+#printbox .page.ac{height:297mm;display:flex;flex-direction:column;gap:4.5mm;font-family:"Tajawal",Tahoma,sans-serif;color:#1f1f1f}
+#printbox .ac .hdline{margin:6px 0 0}
+#printbox .ac-hero{display:grid;grid-template-columns:1fr auto;gap:8mm;align-items:center;background:#f4ece7!important;border-radius:6mm;padding:5mm 7mm}
+#printbox .ac-k{font-size:12px;color:#5b5853}
+#printbox .ac-hero h1{font-size:30px;line-height:1.15;font-weight:800;margin:1mm 0 2mm}
+#printbox .ac-meta{display:flex;flex-wrap:wrap;gap:6px}
+#printbox .ac-meta span{background:#fff!important;border-radius:99px;padding:3px 12px;font-size:12px}
+#printbox .ac-verdict{display:inline-block;margin-top:2mm;padding:3px 12px;border-radius:99px;background:#e7e9dc!important;color:#5f614f;font-weight:700;font-size:12px}
+#printbox .ac-ringbox{position:relative;width:33mm;height:33mm}
+#printbox .ac-ring{width:100%;height:100%}
+#printbox .ac-ringv{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1.1}
+#printbox .ac-ringv b{font-size:30px;font-weight:800}#printbox .ac-ringv small{font-size:11px;color:#5b5853}
+#printbox .ac-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4mm}
+#printbox .ac-stats div{border:1px solid #e6dfd9;border-radius:4mm;padding:2.6mm;text-align:center}
+#printbox .ac-stats small{display:block;font-size:11px;color:#5b5853}#printbox .ac-stats b{font-size:18px;font-weight:800}
+#printbox .ac h2{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;margin:0 0 3mm}
+#printbox .ac h2::before{content:"";width:4px;height:16px;background:#5f614f!important;border-radius:2px}
+#printbox .ac-chart{width:100%;height:auto}
+#printbox .ac-chart .bv{font:700 13px "Tajawal",Tahoma;fill:#1f1f1f}#printbox .ac-chart .bl{font:11px "Tajawal",Tahoma;fill:#5b5853}#printbox .ac-chart .ql{font:700 11px "Tajawal",Tahoma;fill:#9a7a3c}
+#printbox .ac-cap{font-size:11px;color:#5b5853;margin-top:1mm}
+#printbox .ac ol{list-style:none;padding:0;margin:0;position:relative}
+#printbox .ac ol::before{content:"";position:absolute;right:5px;top:6px;bottom:6px;border-right:2px solid #e6dfd9}
+#printbox .ac li{display:flex;align-items:center;gap:4mm;padding:1.1mm 0;position:relative}
+#printbox .ac-dot{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #5f614f;flex:none;z-index:1}
+#printbox .ac-tx{flex:1}#printbox .ac-tx b{font-weight:700}#printbox .ac-tx small{display:block;font-size:11px;color:#5b5853}
+#printbox .ac-chip{background:#5f614f!important;color:#fff;border-radius:99px;padding:2px 12px;font-weight:700;font-size:13px}
+#printbox .ac-more{font-size:12px;color:#5b5853;margin:1mm 22px 0}
+#printbox .ac-ft{margin-top:auto;display:grid;grid-template-columns:1fr auto;gap:8mm;align-items:end;border-top:1px solid #e6dfd9;padding-top:4mm;font-size:12px;line-height:1.9}
+#printbox .ac-ft .tsig{max-height:42px}
 [hidden]{display:none!important}
 @media(max-width:900px){.cap{display:none}}
 @media(max-width:500px){.stage{padding:0;height:100%}.phone{width:100%;height:100svh;border-radius:0;box-shadow:none}.status{display:none}.login{padding-top:28px}}
@@ -354,7 +383,8 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
             <div class="grid2" style="margin-top:10px">
               <button class="gbtn" data-exp="excel"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/></svg>تصدير ملف Excel</button>
               <button class="gbtn" data-exp="word"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>تصدير ملف Word</button>
-            </div></div>
+            </div>              <button class="gbtn wide" data-exp="ach" style="grid-column:1/-1"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg>طباعة بطاقات الإنجاز للصف</button>
+            </div>
           <div class="card" style="padding:14px"><div class="field"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg><input id="rq" type="search" placeholder="ابحثي باسم الطالبة أو السجل..." aria-label="البحث في التقرير"></div></div>
           <div class="card"><h3 id="ltitle">كل طالبات الصف</h3><div class="list" id="rank"></div></div>
           <div class="card" id="det"></div>
@@ -637,8 +667,9 @@ async function detail(){
     <div class="subh">تفاصيل الفرص والمشاركات المرصودة<span class="badge" id="evc">…</span></div>
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
     <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><img class="stampimg" src="${STAMP}" alt="ختم المدرسة"></div>
-    <button class="gbtn wide" id="pone" style="font-size:15px">${I.print}طباعة التقرير الفردي لهذه الطالبة فقط (PDF)</button>`;
-  $("#pone").onclick=printOne;
+    <button class="gbtn wide" id="pone" style="font-size:15px">${I.print}طباعة التقرير الفردي لهذه الطالبة فقط (PDF)</button>
+    <button class="gbtn wide" id="pach" style="font-size:15px;margin-top:10px">${I.award}طباعة بطاقة الإنجاز للطالبة</button>`;
+  $("#pone").onclick=printOne;$("#pach").onclick=()=>{const st=students.find(x=>x.id===det);if(st)printDoc(achPage(st,[...detRecs].reverse()))};
   const {data,error}=await db.from("behavior_records").select("id,description,category,points,created_at,attachment_path,signature,profiles(full_name)").eq("student_id",id).eq("teacher_id",me.id).order("created_at",{ascending:false});
   if(id!==det) return;
   if(error){$("#evs").innerHTML=`<p class="muted">تعذّر تحميل السجلات.</p>`;return fail(error)}
@@ -667,12 +698,37 @@ $("#share").onclick=async()=>{
 
 // التصدير
 const dl=(name,type,text)=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
-async function printClass(l){
+function achPage(s,recs){
+  const m=max(),tot=recs.reduce((a,r)=>a+r.points,0),pct=Math.min(tot/m,1),R=62,C=2*Math.PI*R;
+  const ring=`<svg viewBox="0 0 160 160" class="ac-ring" aria-hidden="true"><circle cx="80" cy="80" r="${R}" fill="none" stroke="#ece6e1" stroke-width="16"/>${tot?`<circle cx="80" cy="80" r="${R}" fill="none" stroke="#5f614f" stroke-width="16" stroke-linecap="round" stroke-dasharray="${(C*pct).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 80 80)"/>`:""}</svg>`;
+  let cum=0;const cs=recs.map(r=>cum+=r.points),shownC=cs.slice(-12),off=cs.length-shownC.length;
+  const W=640,H=112,pad=28,maxv=Math.max(m,cum)+2,bw=(W-pad*2)/Math.max(shownC.length,1);
+  const bars=shownC.map((v,i)=>{const h=(H-40)*v/maxv,x=pad+i*bw+bw*.2,y=H-22-h;
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(bw*.6).toFixed(1)}" height="${h.toFixed(1)}" rx="6" fill="${v>=m?"#5f614f":"#b9bba6"}"/><text x="${(x+bw*.3).toFixed(1)}" y="${(y-6).toFixed(1)}" text-anchor="middle" class="bv">${AR(v)}</text><text x="${(x+bw*.3).toFixed(1)}" y="${H-6}" text-anchor="middle" class="bl">${AR(off+i+1)}</text>`}).join("");
+  const qy=H-22-(H-40)*m/maxv;
+  const chart=recs.length?`<svg viewBox="0 0 ${W} ${H}" class="ac-chart" role="img" aria-label="تراكم الدرجات مع كل رصد"><line x1="${pad}" x2="${W-pad}" y1="${qy.toFixed(1)}" y2="${qy.toFixed(1)}" stroke="#c8a96a" stroke-width="2" stroke-dasharray="6 5"/><text x="${pad+86}" y="${(qy-6).toFixed(1)}" class="ql">النصاب ${AR(m)}</text>${bars}</svg><p class="ac-cap">كل عمود هو مجموع درجات الطالبة بعد كل رصد بالترتيب، والخط المتقطع هو النصاب.</p>`:`<p class="ac-cap">لم تُرصد سلوكيات لهذه الطالبة بعد.</p>`;
+  const MAXL=8,shown=recs.slice(-MAXL);
+  const items=shown.map(r=>`<li><span class="ac-dot"></span><div class="ac-tx"><b>${esc(r.description)}</b><small>${fmtDate(r.created_at)} · أ. ${esc(r.profiles?.full_name||me?.full_name||"")}</small></div><span class="ac-chip">+${AR(r.points)}</span></li>`).join("");
+  const more=recs.length>MAXL?`<p class="ac-more">و${AR(recs.length-MAXL)} سلوكيات أخرى مرصودة سابقاً.</p>`:"";
+  const last=recs.length?fmtDate(recs[recs.length-1].created_at):"—",best=recs.length?"+"+AR(Math.max(...recs.map(r=>r.points))):"—";
+  const sig=[...recs].reverse().find(r=>r.signature)?.signature||lastSig;
+  return `<section class="page ac">${header()}
+    <div class="ac-hero"><div><div class="ac-k">بطاقة إنجاز السلوك الإيجابي · العام الدراسي ${HY}</div><h1>${esc(s.full_name)}</h1>
+      <div class="ac-meta"><span>الصف: ${esc(cname(s.class_id))}</span><span>المعلمة: ${esc(tname())}</span><span>${AR(recs.length)} مشاركات معتمدة</span></div>
+      <span class="ac-verdict">${tot>=m?"✓ مستوفية للنصاب":status(tot)[0]}</span></div>
+      <div class="ac-ringbox">${ring}<div class="ac-ringv"><div><b>${AR(tot)}</b><br><small>من ${AR(m)} درجة</small></div></div></div></div>
+    <div class="ac-stats"><div><small>المشاركات</small><b>${AR(recs.length)}</b></div><div><small>أعلى درجة</small><b>${best}</b></div><div><small>نسبة الإنجاز</small><b>٪${AR(Math.round(tot/m*100))}</b></div><div><small>آخر رصد</small><b style="font-size:14px">${last}</b></div></div>
+    <div><h2>كيف تراكمت الدرجات</h2>${chart}</div>
+    <div><h2>السلوكيات المرصودة</h2>${recs.length?`<ol>${items}</ol>${more}`:`<p class="ac-cap">لا توجد سلوكيات مرصودة بعد.</p>`}</div>
+    <div class="ac-ft"><div>${tot>=m?"نشكر الطالبة على مبادراتها، ونتمنى لها دوام التميز.":"نشجع الطالبة على مواصلة مبادراتها الإيجابية."}<br><b>المعلمة:</b> ${esc(tname())}<br><b>التوقيع:</b> ${sig?`<img class="tsig" src="${sig}" alt="توقيع المعلمة">`:"...................."}<br><b>التاريخ:</b> ${fmtDate(new Date())}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div>
+  </section>`;
+}
+async function printClass(l,page=formPage){
   toast("جارٍ تجهيز صفحات الطباعة…");
   const ids=l.map(s=>s.id),{data,error}=await db.from("behavior_records").select("student_id,description,points,created_at,signature,profiles(full_name)").eq("teacher_id",me.id).in("student_id",ids).order("created_at",{ascending:true});
   if(error) return fail(error,"تعذّر تجهيز الطباعة، حاولي مرة أخرى");
-  const by={};data.forEach(r=>(by[r.student_id]=by[r.student_id]||[]).push(r));
-  printDoc([...l].sort((a,b)=>a.full_name.localeCompare(b.full_name,"ar")).map(s=>formPage(s,by[s.id]||[])).join(""));
+  const by={};[...data].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at))).forEach(r=>(by[r.student_id]=by[r.student_id]||[]).push(r));
+  printDoc([...l].sort((a,b)=>a.full_name.localeCompare(b.full_name,"ar")).map(s=>page(s,by[s.id]||[])).join(""));
 }
 function exportAs(kind){
   const l=classRows(),m=max(),title=`سجل درجات السلوك الإيجابي - ${cname(rcls)} - ${tname()}`,fname=`positive-behavior-class${rcls}-${new Date().toISOString().slice(0,10)}`;
@@ -680,6 +736,7 @@ function exportAs(kind){
   const rows=l.map((s,i)=>[i+1,s.full_name,cname(s.class_id),sc(s.id),m,status(sc(s.id))[0]]);
   const head=["#","اسم الطالبة","الصف","المجموع","النصاب","الحالة"];
   if(kind==="pdf") return printClass(l);
+  if(kind==="ach") return printClass(l,achPage);
   if(kind==="excel"){
     if(window.XLSX){const ws=XLSX.utils.aoa_to_sheet([head,...rows]);const wb=XLSX.utils.book_new();wb.Workbook={Views:[{RTL:true}]};XLSX.utils.book_append_sheet(wb,ws,"السجل");dl(`${fname}.xlsx`,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",XLSX.write(wb,{bookType:"xlsx",type:"array"}))}
     else{const q=v=>`"${String(v).replace(/"/g,'""')}"`;dl(`${fname}.csv`,"text/csv;charset=utf-8","﻿"+[head,...rows].map(r=>r.map(q).join(",")).join("\r\n"))}
