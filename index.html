@@ -695,13 +695,25 @@ async function detail(){
     const {data,error}=await db.from("behavior_records").select("description,points,created_at,signature,teacher_id,profiles(full_name)").eq("student_id",st.id).order("created_at",{ascending:true});
     if(error) return fail(error,"تعذّر تجهيز بطاقة الإنجاز");
     printDoc(achPage(st,[...data].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)))))};
-  const {data,error}=await db.from("behavior_records").select("id,description,category,points,created_at,attachment_path,signature,profiles(full_name)").eq("student_id",id).eq("teacher_id",me.id).order("created_at",{ascending:false});
+  const {data,error}=await db.from("behavior_records").select("id,teacher_id,description,category,points,created_at,attachment_path,signature,profiles(full_name)").eq("student_id",id).eq("teacher_id",me.id).order("created_at",{ascending:false});
   if(id!==det) return;
   if(error){$("#evs").innerHTML=`<p class="muted">تعذّر تحميل السجلات.</p>`;return fail(error)}
   detRecs=data;$("#evc").textContent=`${data.length} سجلات معتمدة`;
-  $("#evs").innerHTML=data.length?data.map((r,i)=>`<div class="ev"><div><b>● ${esc(r.description)}</b><small>التاريخ: ${fmtDate(r.created_at)}</small>${r.attachment_path?`<button type="button" class="att" data-att="${i}">📎 عرض المرفق</button>`:""}</div><div class="pt"><b>+${r.points} درجات</b><small style="margin-top:6px">المشرفة: أ. ${esc(r.profiles?.full_name)}</small></div></div>`).join(""):`<p class="muted">لم ترصدي لهذه الطالبة أي سلوك بعد.</p>`;
+  $("#evs").innerHTML=data.length?data.map((r,i)=>`<div class="ev"><div><b>● ${esc(r.description)}</b><small>التاريخ: ${fmtDate(r.created_at)}</small>${r.attachment_path?`<button type="button" class="att" data-att="${i}">📎 عرض المرفق</button>`:""}</div><div class="pt"><b>+${r.points} درجات</b><small style="margin-top:6px">المشرفة: أ. ${esc(r.profiles?.full_name)}</small>${r.teacher_id===me?.id?`<button type="button" class="gbtn sm danger" data-recdel="${i}" style="margin-top:8px" aria-label="حذف مشاركة ${esc(r.description)}">${I.del}حذف</button>`:""}</div></div>`).join(""):`<p class="muted">لم ترصدي لهذه الطالبة أي سلوك بعد.</p>`;
 }
 $("#det").addEventListener("click",async e=>{
+  const d=e.target.closest("[data-recdel]");
+  if(d){
+    const r=detRecs[+d.dataset.recdel];if(!r||r.teacher_id!==me.id)return;
+    if(d.dataset.armed!=="1"){d.dataset.armed="1";d.lastChild.textContent="تأكيد الحذف";toast(`اضغطي «تأكيد الحذف» لحذف مشاركة «${r.description}» (+${r.points})`,3500);setTimeout(()=>{if(d.isConnected){delete d.dataset.armed;d.lastChild.textContent="حذف"}},3500);return}
+    busy(d,true);
+    const {data,error}=await db.from("behavior_records").delete().eq("id",r.id).eq("teacher_id",me.id).select("id");
+    busy(d,false);
+    if(error||!data?.length) return fail(error,"لم تُحذف المشاركة، حاولي مرة أخرى");
+    scores[det]=Math.max(0,sc(det)-r.points);
+    toast(`حُذفت المشاركة، ومجموع الطالبة الآن ${sc(det)} / ${max()}`);
+    rank();pick();return;
+  }
   const b=e.target.closest("[data-att]");if(!b)return;
   const w=window.open("","_blank");
   const {data,error}=await db.storage.from("evidence").createSignedUrl(detRecs[+b.dataset.att].attachment_path,300);
