@@ -538,7 +538,7 @@ const MAXT=2,FULLMSG="هذا الصف مسند لمعلمتين، ولا يمك�
 const isFull=e=>/class_full/.test(e?.message||"");
 const fullCls=id=>(load[id]||0)>=MAXT&&!assigned.some(a=>a.class_id===id);
 async function loadLoad(){const {data,error}=await db.rpc("class_load");if(!error)load=Object.fromEntries((data||[]).map(x=>[x.class_id,x.teachers]));return !error}
-const optCls=c=>fullCls(c.id)?`<option value="${c.id}" disabled>${esc(c.name)} · مكتمل (معلمتان)</option>`:`<option value="${c.id}">${esc(c.name)}</option>`;
+const optCls=c=>fullCls(c.id)?`<option value="${c.id}" disabled>${esc(c.name)}</option>`:`<option value="${c.id}">${esc(c.name)}</option>`;
 const busy=(b,on)=>{if(b)b.disabled=on};
 const chips=(el,arr,cur,fn)=>{el.innerHTML=arr.map((a,i)=>`<button type="button" class="chip" aria-pressed="${i===cur}" data-i="${i}">${esc(a)}</button>`).join("");el.onclick=e=>{const b=e.target.closest(".chip");if(b){[...el.children].forEach(c=>c.setAttribute("aria-pressed",c===b));fn(+b.dataset.i)}}};
 
@@ -1090,7 +1090,7 @@ $("#lf").onsubmit=async e=>{
 async function loadFirstClasses(){
   fpick=[];const [{data,error}]=await Promise.all([db.from("classes").select("id,name").order("id"),loadLoad()]);
   if(error||!data.length){$("#fcls").innerHTML=`<p class="muted">${error?"تعذّر تحميل الصفوف. حدّثي الصفحة وحاولي مرة أخرى.":"لا توجد صفوف بعد. ستُضاف من الإعدادات."}</p>`;return}
-  $("#fcls").innerHTML=data.map(c=>fullCls(c.id)?`<button type="button" class="chip" aria-pressed="false" data-id="${c.id}" disabled title="${FULLMSG}">${esc(c.name)} · مكتمل</button>`:`<button type="button" class="chip" aria-pressed="false" data-id="${c.id}">${esc(c.name)}</button>`).join("")+(data.some(c=>fullCls(c.id))?`<p class="muted" style="width:100%;margin:4px 2px 0;font-size:12.5px">الصف المكتمل مسند لمعلمتين، ولا يُسند لأكثر من معلمتين.</p>`:"");
+  $("#fcls").innerHTML=data.map(c=>fullCls(c.id)?`<button type="button" class="chip" aria-pressed="false" data-id="${c.id}" disabled title="${FULLMSG}">${esc(c.name)}</button>`:`<button type="button" class="chip" aria-pressed="false" data-id="${c.id}">${esc(c.name)}</button>`).join("");
 }
 $("#fcls").onclick=e=>{
   const b=e.target.closest(".chip");if(!b||b.disabled)return;const id=+b.dataset.id,on=b.getAttribute("aria-pressed")!=="true";
