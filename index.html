@@ -133,7 +133,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .ev .att{appearance:none;border:0;background:none;font:inherit;font-size:12px;color:var(--ink);text-decoration:underline;cursor:pointer;padding:4px 0 0}
 .approve{display:flex;align-items:center;gap:12px;padding:14px;border-radius:20px;background:rgba(186,200,224,.35);border:1px solid var(--edge);margin:14px 0}
 .approve div{flex:1}.approve b{font-size:14px;font-weight:700;display:block}.approve small{font-size:12px;color:var(--mute)}
-.stamp{width:62px;height:62px;border-radius:50%;border:2px dashed rgba(31,31,31,.35);display:grid;place-items:center;text-align:center;font-size:10px;line-height:1.3;color:var(--mute);flex:none}
+.stampimg{width:104px;height:auto;flex:none;transform:rotate(-6deg);opacity:.92;mix-blend-mode:multiply}
 .tog{appearance:none;width:50px;height:30px;border-radius:99px;background:rgba(31,31,31,.15);position:relative;cursor:pointer;border:1px solid var(--edge);flex:none;transition:background .2s}
 .tog::after{content:"";position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:right .2s}
 .tog:checked{background:#1f1f1f}.tog:checked::after{right:23px}
@@ -195,7 +195,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
   #printbox table{width:100%;border-collapse:collapse}#printbox th,#printbox td{border:1px solid #999;padding:6px 8px;text-align:right}
   #printbox th{background:#eee}
   #printbox .sigimg{height:70px}
-  #printbox .stampbox{width:90px;height:90px;border:2px dashed #555;border-radius:50%;display:grid;place-items:center;font-size:11px}
+  #printbox .pstamp{width:170px;height:auto;transform:rotate(-6deg)}
   #printbox .foot2{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px}
 }
 </style>
@@ -440,6 +440,7 @@ const SUPABASE_KEY = "sb_publishable_FIlbYRr7tGPRNUq-oaO5kQ_-R5uE3hy"; // الم
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const tints=["rgba(186,200,224,.7)","rgba(208,190,163,.7)","rgba(235,219,211,.9)","rgba(143,145,124,.45)"];
+const STAMP="stamp.png";
 const FMT=["pdf","excel","word"],FMTL=["PDF","Excel","Word"];
 const TITLES={rec:"الرصد",rep:"المتابعة",stu:"الطالبات",set:"الإعدادات"};
 const db=SUPABASE_URL&&SUPABASE_KEY&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
@@ -571,7 +572,7 @@ $("#save").onclick=async()=>{
 
 // ---------- الطباعة ----------
 const phead=t=>`<div class="ph"><div><div>المملكة العربية السعودية</div><div>${esc(school()||"المدرسة")}</div><h1>${esc(t)}</h1></div><div style="text-align:left">العام الدراسي ${HY}<br>${esc(tname())}</div></div>`;
-const pfoot=sig=>`<div class="foot2"><div>المعلمة: ${esc(tname())}<br>${sig?`<img class="sigimg" src="${sig}" alt="التوقيع">`:"التوقيع: ............"}</div><div class="stampbox">خاتم المدرسة</div></div>`;
+const pfoot=sig=>`<div class="foot2"><div>المعلمة: ${esc(tname())}<br>${sig?`<img class="sigimg" src="${sig}" alt="التوقيع">`:"التوقيع: ............"}</div><img class="pstamp" src="${STAMP}" alt="ختم المدرسة"></div>`;
 function printDoc(html){
   $("#printbox").innerHTML=html;document.documentElement.classList.add("pp");
   const done=()=>{document.documentElement.classList.remove("pp");window.removeEventListener("afterprint",done)};
@@ -608,7 +609,7 @@ async function detail(){
     <div class="kv"><div><small>الصف الدراسي</small><b>${esc(g)}</b></div><div><small>الفصل</small><b>${esc(sec)}</b></div></div>
     <div class="subh">تفاصيل الفرص والمشاركات المرصودة<span class="badge" id="evc">…</span></div>
     <div id="evs"><p class="muted">جارٍ تحميل السجلات…</p></div>
-    <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><div class="stamp">خاتم<br>المدرسة</div></div>
+    <div class="approve"><span class="ibox">${I.award}</span><div><b>الاعتماد الرقمي الرسمي</b><small>المعلمة: ${esc(tname())} · معتمد إلكترونياً</small></div><img class="stampimg" src="${STAMP}" alt="ختم المدرسة"></div>
     <button class="gbtn wide" id="pone" style="font-size:15px">${I.print}طباعة التقرير الفردي لهذه الطالبة فقط (PDF)</button>`;
   $("#pone").onclick=printOne;
   const {data,error}=await db.from("behavior_records").select("id,description,category,points,created_at,attachment_path,profiles(full_name)").eq("student_id",id).eq("teacher_id",me.id).order("created_at",{ascending:false});
@@ -649,7 +650,7 @@ function exportAs(kind){
   if(kind==="excel"){
     if(window.XLSX){const ws=XLSX.utils.aoa_to_sheet([head,...rows]);const wb=XLSX.utils.book_new();wb.Workbook={Views:[{RTL:true}]};XLSX.utils.book_append_sheet(wb,ws,"السجل");dl(`${fname}.xlsx`,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",XLSX.write(wb,{bookType:"xlsx",type:"array"}))}
     else{const q=v=>`"${String(v).replace(/"/g,'""')}"`;dl(`${fname}.csv`,"text/csv;charset=utf-8","﻿"+[head,...rows].map(r=>r.map(q).join(",")).join("\r\n"))}
-  } else dl(`${fname}.doc`,"application/msword",`<html><head><meta charset="utf-8"></head><body dir="rtl" style="font-family:Tahoma"><p>المملكة العربية السعودية<br>${esc(school())}</p><h2>${esc(title)}</h2><table border="1" cellpadding="6" style="border-collapse:collapse"><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</table><p>المعلمة: ${esc(tname())}</p></body></html>`);
+  } else dl(`${fname}.doc`,"application/msword",`<html><head><meta charset="utf-8"></head><body dir="rtl" style="font-family:Tahoma"><p>المملكة العربية السعودية<br>${esc(school())}</p><h2>${esc(title)}</h2><table border="1" cellpadding="6" style="border-collapse:collapse"><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</table><p>المعلمة: ${esc(tname())}</p><p><img src="${new URL(STAMP,location.href).href}" width="170" alt="ختم المدرسة"></p></body></html>`);
   toast("تم تنزيل الملف");
 }
 $$("[data-exp]").forEach(b=>b.onclick=()=>exportAs(b.dataset.exp));
