@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>سجل السلوك الايجابي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
 /* VOICE everyday tool for teachers, calm and soft
    IDEA frosted glass panes floating over soft pastel colour shapes
    PICTURE the phone itself: a live app with glass cards, glass buttons and a glass tab bar
    COLOUR blush #ebdbd3, periwinkle #bac8e0, sand #d0bea3, sage #8f917c, umbra #1f1f1f ink, white glass
-   TYPE Readex Pro for all text
+   TYPE Tajawal for all text
    LAYOUT laptop: phone frame centred with a short side caption; phone: app fills the screen */
 :root{color-scheme:light;--ink:#1f1f1f;--mute:#4a4742;--sage:#8f917c;--glass:rgba(255,255,255,.56);--edge:rgba(255,255,255,.75);--line:rgba(31,31,31,.08);--shade:0 8px 32px rgba(70,55,40,.10)}
 *{box-sizing:border-box;min-width:0;margin:0}
 html,body{height:100%}
-body{margin:0;background:#efe6e0;color:var(--ink);font:15px/1.6 "Readex Pro",Tahoma,sans-serif;overflow-x:clip}
+body{margin:0;background:#efe6e0;color:var(--ink);font:15px/1.6 "Tajawal",Tahoma,sans-serif;overflow-x:clip}
 .stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:48px;padding:32px max(5vw,16px)}
 .cap{max-width:300px}
 .cap h1{font-size:40px;line-height:1.25;letter-spacing:-.01em;font-weight:700}
@@ -26,7 +26,7 @@ body{margin:0;background:#efe6e0;color:var(--ink);font:15px/1.6 "Readex Pro",Tah
 .bg{position:absolute;inset:0;overflow:hidden}
 .bg b{position:absolute;border-radius:50%;filter:blur(2px)}
 .app{position:absolute;inset:0;display:flex;flex-direction:column}
-.status{display:flex;justify-content:space-between;padding:14px 28px 4px;font-size:14px;font-weight:600;direction:ltr}
+.status{display:flex;justify-content:space-between;padding:14px 28px 4px;font-size:14px;font-weight:700;direction:ltr}
 .bar{display:flex;align-items:center;gap:12px;margin:6px 14px 0;padding:10px 12px 10px 16px;border-radius:24px;background:rgba(255,255,255,.5);border:1px solid var(--edge);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--shade)}
 .bar small{display:block;font-size:12px;color:var(--mute);line-height:1.3}
 .bar b{font-size:18px;font-weight:700;line-height:1.3}
@@ -36,7 +36,7 @@ body{margin:0;background:#efe6e0;color:var(--ink);font:15px/1.6 "Readex Pro",Tah
 .ptitle{font-size:26px;font-weight:700;line-height:1.3;letter-spacing:-.01em}
 .psub{display:block;color:var(--mute);font-size:14px;margin:4px 0 22px}
 .card{background:var(--glass);border:1px solid var(--edge);border-radius:28px;padding:22px;margin-bottom:18px;backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);box-shadow:var(--shade),inset 0 1px 0 rgba(255,255,255,.9)}
-.card h3{font-size:17px;font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.card h3{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .hint{margin-inline-start:auto;font-size:12px;font-weight:400;color:var(--mute)}
 .badge{margin-inline-start:auto;font-size:12px;font-weight:500;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.7);border:1px solid var(--line);white-space:nowrap;color:var(--ink)}
 .badge.ok{background:rgba(143,145,124,.25)}.badge.warm{background:rgba(208,190,163,.45)}.badge.cool{background:rgba(186,200,224,.6)}
@@ -53,7 +53,7 @@ body{margin:0;background:#efe6e0;color:var(--ink);font:15px/1.6 "Readex Pro",Tah
 .gbtn.round{width:46px;padding:0;border-radius:50%}
 .gbtn.sm{min-height:38px;padding:0 12px;font-size:14px;border-radius:14px}
 .gbtn.icon{width:38px;min-height:38px;padding:0;border-radius:12px}
-.gbtn.wide{width:100%;font-weight:600;font-size:16px;min-height:54px}
+.gbtn.wide{width:100%;font-weight:700;font-size:16px;min-height:54px}
 .gbtn.danger{color:#9b2c2c}
 .ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .field{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.45);border:1px solid var(--edge);border-radius:18px;padding:0 14px;min-height:50px}
@@ -74,11 +74,11 @@ span.chip{box-shadow:none}
 .chip[aria-pressed=true]{background:#1f1f1f;color:#fff;border-color:transparent;box-shadow:0 6px 14px rgba(31,31,31,.28)}
 .chip i{width:7px;height:7px;border-radius:50%;background:var(--ink);display:inline-block}
 .pts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.pts .gbtn{font-size:18px;font-weight:600;direction:ltr}
+.pts .gbtn{font-size:18px;font-weight:700;direction:ltr}
 .pts .gbtn[aria-pressed=true]{color:#fff;background:linear-gradient(160deg,#5f614f,#4b4d3e);border-color:rgba(255,255,255,.3);box-shadow:0 8px 18px rgba(75,77,62,.35),inset 0 2px 6px rgba(0,0,0,.25)}
 .stu{display:flex;align-items:center;gap:12px}
-.av{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-weight:600;flex:none}
-.stu b{font-weight:600;display:block;line-height:1.4;font-size:15px}.stu small{color:var(--mute);font-size:13px;display:block}
+.av{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-weight:700;flex:none}
+.stu b{font-weight:700;display:block;line-height:1.4;font-size:15px}.stu small{color:var(--mute);font-size:13px;display:block}
 .stu .end{margin-inline-start:auto;display:flex;gap:6px;align-items:center}
 .list .stu{padding:14px 0;border-top:1px solid var(--line);cursor:pointer}.list .stu:first-child{border:0}
 .list .stu[aria-current=true] b{text-decoration:underline;text-underline-offset:4px}
@@ -90,11 +90,11 @@ span.chip{box-shadow:none}
 .meter i{display:block;height:100%;background:linear-gradient(90deg,#4b4d3e,var(--sage));transition:width .4s}
 .meter u{display:block;height:100%;background:var(--sage);opacity:.35;transition:width .4s}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--mute)}
-.row b{color:var(--ink);font-weight:600}
+.row b{color:var(--ink);font-weight:700}
 .big{font-size:44px;font-weight:700;line-height:1;letter-spacing:-.02em}
 .drop{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:18px 14px;border-radius:22px;border:1.5px dashed rgba(31,31,31,.25);background:rgba(255,255,255,.35);cursor:pointer;transition:background .2s}
 .drop.over{background:rgba(186,200,224,.45)}
-.drop b{font-size:14px;font-weight:600}.drop small{font-size:12px;color:var(--mute)}
+.drop b{font-size:14px;font-weight:700}.drop small{font-size:12px;color:var(--mute)}
 .drop .ibox{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.7);border:1px solid var(--edge)}
 .filechip{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 12px;border-radius:14px;background:rgba(255,255,255,.6);border:1px solid var(--edge);font-size:13px}
 .filechip span{flex:1;overflow-wrap:anywhere}
@@ -111,7 +111,7 @@ button.tile{appearance:none;font:inherit;color:var(--ink);text-align:right;curso
 button.tile{box-shadow:0 6px 16px rgba(70,55,40,.14),inset 0 1px 0 rgba(255,255,255,.8)}
 button.tile:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(70,55,40,.18),inset 0 1px 0 rgba(255,255,255,.8)}
 button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8px rgba(31,31,31,.15)}
-.tile span{font-size:14px;font-weight:600;line-height:1.35;min-height:2.7em}
+.tile span{font-size:14px;font-weight:700;line-height:1.35;min-height:2.7em}
 .tile b{font-size:30px;font-weight:700;line-height:1}
 .tile small{font-size:12px;opacity:.85}
 .tile[aria-pressed=true]{background:#1f1f1f!important;color:#fff;border-color:#1f1f1f;box-shadow:0 8px 22px rgba(31,31,31,.25)}
@@ -125,9 +125,9 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 16px}
 .kv div{padding:12px 8px;min-height:72px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-align:center;border-radius:16px;background:rgba(255,255,255,.45);border:1px solid var(--edge)}
 .kv small{display:block;font-size:12px;color:var(--mute)}.kv b{font-size:16px;font-weight:700;white-space:nowrap}
-.subh{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;margin:6px 0 10px}
+.subh{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;margin:6px 0 10px}
 .ev{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:18px;background:rgba(255,255,255,.45);border:1px solid var(--edge);margin-bottom:8px}
-.ev div{flex:1}.ev b{font-weight:600;font-size:14px;display:block}.ev small{display:block;font-size:12px;color:var(--mute)}
+.ev div{flex:1}.ev b{font-weight:700;font-size:14px;display:block}.ev small{display:block;font-size:12px;color:var(--mute)}
 .ev .pt{flex:none;text-align:center}
 .ev .pt b{font-size:14px;padding:4px 10px;border-radius:10px;background:rgba(143,145,124,.25);white-space:nowrap}
 .ev .att{appearance:none;border:0;background:none;font:inherit;font-size:12px;color:var(--ink);text-decoration:underline;cursor:pointer;padding:4px 0 0}
@@ -161,7 +161,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .divider{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:12px;margin-bottom:6px}
 .divider::before,.divider::after{content:"";flex:1;border-top:1px solid rgba(31,31,31,.15)}
 .help{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.35)}
-.help b{display:block;font-size:15px;font-weight:600;margin-bottom:4px}.help p{font-size:13px;color:var(--mute);line-height:1.7}
+.help b{display:block;font-size:15px;font-weight:700;margin-bottom:4px}.help p{font-size:13px;color:var(--mute);line-height:1.7}
 .foot{text-align:center;font-size:12px;color:var(--mute);line-height:1.8;margin-top:6px}
 .pinuser{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
 .pinin{letter-spacing:.7em;font-size:26px!important;font-weight:700;text-align:center}
@@ -171,14 +171,14 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 .importcard{display:flex;align-items:center;gap:12px;width:100%;text-align:right;font:inherit;color:var(--ink);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
 .importcard:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(70,55,40,.18),inset 0 1px 0 #fff}
 .importcard:active{transform:translateY(1px) scale(.98);box-shadow:inset 0 3px 8px rgba(31,31,31,.12)}
-.importcard div{flex:1}.importcard b{display:block;font-size:15px;font-weight:600}.importcard small{font-size:12px;color:var(--mute)}
+.importcard div{flex:1}.importcard b{display:block;font-size:15px;font-weight:700}.importcard small{font-size:12px;color:var(--mute)}
 .alist{display:flex;flex-direction:column;gap:6px;padding:6px;border-radius:20px;background:rgba(255,255,255,.3);border:1px solid var(--edge)}
 .arow{display:flex;align-items:center;gap:10px;padding:12px;border-radius:16px;cursor:pointer;transition:background .2s}
 .arow:hover{background:rgba(255,255,255,.5)}
 .arow.main{background:rgba(255,255,255,.78);box-shadow:0 2px 10px rgba(70,55,40,.08)}
 .arow .dot{width:9px;height:9px;border-radius:50%;background:rgba(31,31,31,.25);flex:none}
 .arow.main .dot{background:#1f1f1f}
-.arow>div{flex:1}.arow b{font-weight:600;font-size:15px}.arow small{display:block;font-size:12px;color:var(--mute)}
+.arow>div{flex:1}.arow b{font-weight:700;font-size:15px}.arow small{display:block;font-size:12px;color:var(--mute)}
 .multi .chip[aria-pressed=true]::before{content:"✓ "}
 .multi .chip[data-main=true]::after{content:" · رئيسي";font-size:12px;opacity:.85}
 #printbox{display:none}
@@ -190,11 +190,11 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
 @media print{
   html.pp,html.pp body{background:#fff!important;height:auto;overflow:visible}
   html.pp .stage,html.pp .toast{display:none!important}
-  html.pp #printbox{display:block;color:#000;background:#fff;font:14px/1.6 "Traditional Arabic","Amiri","Times New Roman",Tahoma,serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html.pp #printbox{display:block;color:#000;background:#fff;font:14px/1.6 "Tajawal",Tahoma,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   #printbox .page{box-sizing:border-box;width:210mm;padding:13mm 16mm 10mm;break-after:page;page-break-after:always;overflow:hidden}
   #printbox .page:last-child{break-after:auto;page-break-after:auto}
   #printbox .hd{display:flex;justify-content:space-between;align-items:center;gap:20px}
-  #printbox .hdt{text-align:center;font:700 13px/1.55 Tahoma,Arial,sans-serif}
+  #printbox .hdt{text-align:center;font:700 13px/1.55 "Tajawal",Tahoma,sans-serif}
   #printbox .hdl{width:190px;height:auto}
   #printbox .hdline{border-top:3px solid #1f3a73;margin:8px 0 22px}
   #printbox .ft{text-align:center;font-size:24px;font-weight:700;margin:0 0 22px}
@@ -208,7 +208,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
   #printbox td.sg img{max-height:38px;max-width:100%}
   #printbox .tsig{display:block;max-height:55px;max-width:180px;margin:2px 0}
   #printbox tfoot th{height:34px}
-  #printbox .pfoot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;font:700 14px/1.9 Tahoma,Arial,sans-serif}
+  #printbox .pfoot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;font:700 14px/1.9 "Tajawal",Tahoma,sans-serif}
   #printbox .pstamp{width:165px;height:auto;transform:rotate(-6deg)}
 }
 </style>
@@ -247,7 +247,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
           <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg><input id="em" type="email" autocomplete="username email" inputmode="email" dir="ltr" placeholder="teacher@school.edu.sa"></div></div>
         <div data-step="code" hidden><p id="sentto" style="font-size:14px;color:var(--mute);line-height:1.7;margin:8px 4px 0"></p>
           <label class="l" for="otp">رمز التحقق الخاص بالمعلمة <small><button type="button" class="linkbtn" id="chg">تغيير البريد</button></small></label>
-          <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="otp" inputmode="numeric" autocomplete="one-time-code" dir="ltr" maxlength="10" style="letter-spacing:.4em;font-size:20px;font-weight:600" placeholder="••••••"></div></div>
+          <div class="field"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V7a4 4 0 018 0v3"/></svg><input id="otp" inputmode="numeric" autocomplete="one-time-code" dir="ltr" maxlength="10" style="letter-spacing:.4em;font-size:20px;font-weight:700" placeholder="••••••"></div></div>
         <div data-step="name" hidden><p style="font-size:14px;color:var(--mute);line-height:1.7;margin:8px 4px 0">أهلاً بكِ! هذا دخولكِ الأول، اكتبي بياناتكِ مرة واحدة فقط لتظهر في السجلات.</p>
           <label class="l" for="fn">الاسم الكامل <span class="req">*</span></label>
           <div class="field"><input id="fn" autocomplete="name" placeholder="مثال: سارة خالد الأحمد"></div>
@@ -360,7 +360,7 @@ button.tile:active{transform:translateY(1px) scale(.97);box-shadow:inset 0 3px 8
           <div class="card" id="det"></div>
           <div class="card" style="display:flex;align-items:center;gap:12px">
             <div class="ibox"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg></div>
-            <div style="flex:1"><b style="display:block;font-size:15px;font-weight:600">التوجيه الطلابي</b><small style="font-size:12px;color:var(--mute)">إرسال نسخة من تقرير الصف للاعتماد النهائي</small></div>
+            <div style="flex:1"><b style="display:block;font-size:15px;font-weight:700">التوجيه الطلابي</b><small style="font-size:12px;color:var(--mute)">إرسال نسخة من تقرير الصف للاعتماد النهائي</small></div>
             <button class="gbtn dark sm" id="share"><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"/></svg>مشاركة</button>
           </div>
         </section>
